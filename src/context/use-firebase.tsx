@@ -1,0 +1,194 @@
+import React, { useContext, createContext } from 'react';
+import { initializeApp, FirebaseApp, FirebaseOptions } from 'firebase/app'
+import { Firestore, getFirestore, addDoc, collection, getDoc, DocumentSnapshot, Timestamp, doc, getDocs, query, where } from 'firebase/firestore'
+
+import {
+    getAuth,
+    signInWithEmailAndPassword,
+    signOut,
+    UserCredential,
+    createUserWithEmailAndPassword,
+    User,
+} from 'firebase/auth';
+import { useNavigate } from "react-router-dom";
+import { AppUser } from '../models/AppUser';
+
+
+export interface FirebaseContextProps {
+    app: FirebaseApp | null;
+    firebaseUser: User | undefined;
+    appUser: AppUser | undefined;
+    hasAuthLoaded: boolean
+    login: (
+        email: string,
+        password: string
+    ) => Promise<UserCredential | undefined>;
+    securityRegister: (
+        email: string,
+        password: string,
+        name: string
+    ) => Promise<UserCredential | undefined>;
+}
+
+const firebaseCredentials: FirebaseOptions = {
+    apiKey: process.env.REACT_APP_APIKEY,
+    authDomain: process.env.REACT_APP_AUTHDOMAIN,
+    projectId: process.env.REACT_APP_PROJECTID,
+    storageBucket: process.env.REACT_APP_STORAGEBUCKET,
+    messagingSenderId: process.env.REACT_APP_MESSAGGINGSENDERID,
+    appId: process.env.REACT_APP_APPID
+}
+
+const FirebaseContext = createContext<FirebaseContextProps>({
+    app: null,
+    firebaseUser: undefined,
+    appUser: undefined,
+    hasAuthLoaded: true,
+    login: () => Promise.resolve(undefined),
+    securityRegister: () => Promise.resolve(undefined),
+});
+
+export const FirebaseProvider = ({ children }: any) => {
+    const [app, setApp] = React.useState<FirebaseApp | null>(null);
+    const [db, setDb] = React.useState<Firestore>();
+    const [firebaseUser, setFirebaseUser] = React.useState<User | undefined>(undefined);
+    const [appUser, setAppUser] = React.useState<AppUser | undefined>(undefined);
+    const [hasAuthLoaded, setHasAuthLoaded] = React.useState(true);
+    const navigate = useNavigate();
+
+    const login = async (email: string, password: string) => {
+        try {
+            const auth = getAuth();
+            const user = await signInWithEmailAndPassword(auth, email, password);
+            setFirebaseUser(user.user);
+
+            //Get app user
+            await getUserDataByEmail(email);                      
+            
+            // if(appUser){
+                 return user;
+            // }
+            // else{
+            //     signOut(auth);
+            // }
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const getUserDataByEmail = async (email: string) => {
+        try {
+            
+            //Get app user
+
+            if (db) {
+                const queryResult = query(collection(db, "users"), where("email", "==", email));
+                const querySnapshot = await getDocs(queryResult);                
+                querySnapshot.forEach((doc) => {      
+                    const result: AppUser  =  {
+                        authenticationId: doc.data().authenticationId,
+                        name: doc.data().name,
+                        email: doc.data().email
+                    };                    
+                    setAppUser(result);
+                });            
+            }            
+        } catch (error) {
+            console.log(error);
+        }        
+    };
+
+    const securityRegister = async (email: string, password: string, name: string) => {
+
+        try {
+            //Create SecurityCredentials
+            const auth = getAuth();
+            const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+            setFirebaseUser(userCredentials.user);
+
+            //create App User
+            if (userCredentials) {
+                userRegister(userCredentials.user.uid,email, name);
+            }
+
+            return userCredentials;
+        } catch (error) {
+            console.log(error);
+        }
+
+    };
+
+    const userRegister = async (id: string, email: (string | null), name: string) => {
+
+        try {
+            if (db) {
+                await addDoc(collection(db, 'users'), {
+                    authenticationId: id,
+                    email: email,
+                    name: name,
+                    created: Timestamp.now()
+                })
+                    .then((result) => {
+                        const user: AppUser = {
+                            authenticationId: result.id,
+                            name: name,
+                            email: email ? email : "email@notfound.com"
+                        }
+                        setAppUser(user);
+                    });
+            }
+
+        } catch (err) {
+            console.log("Error found");
+            console.log(err);
+        }
+
+
+    };
+
+    const authStateChanged = React.useCallback(
+        async (user: User | null) => {
+            if (!user) {
+                setHasAuthLoaded(false);
+                return;
+            }
+
+            setFirebaseUser(user);
+            if(user.email)
+                getUserDataByEmail(user.email);
+
+            setHasAuthLoaded(false);
+            navigate("/");
+
+        }, [navigate]);
+
+    React.useEffect(() => {
+        const app = initializeApp(firebaseCredentials);
+        const db = getFirestore(app);
+        setApp(app);
+        setDb(db);
+    }, []);
+
+    React.useEffect(() => {
+        const unsubscribe = getAuth().onAuthStateChanged(authStateChanged);
+        return () => unsubscribe();
+    }, [authStateChanged]);
+
+    const contextValue: FirebaseContextProps = {
+        app,
+        firebaseUser,
+        appUser,
+        hasAuthLoaded,
+        login,
+        securityRegister,
+    };
+
+    return (
+        <FirebaseContext.Provider value={contextValue}>
+            {children}
+        </FirebaseContext.Provider>
+    );
+};
+
+export const useFierbase = () => useContext<FirebaseContextProps>(FirebaseContext);
