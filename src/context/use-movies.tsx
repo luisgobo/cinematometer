@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, UseQueryResult } from 'react-query';
 import { Movie } from '../models/movie';
 import { getNowPlayingMovies, getPopularMovies, getTopRatedMovies, getUpcomingMovies } from '../queries/movies';
 
@@ -32,7 +32,7 @@ export const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ child
     const { data: nowPlayingMovies, status: nowPlayingMoviesStatus, error: nowPlayingMoviesError } = useQuery(
         ["nowPlayingMovies", moviesPage],
         () => getNowPlayingMovies(moviesPage)
-    );
+    );    
 
     const { data: popularMovies } = useQuery(
         ["popularMovies", moviesPage],
@@ -69,19 +69,13 @@ export const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ child
             nowPlayingMoviesError,
         ]
     );
-
+    
     React.useEffect(() => {
         if (nowPlayingMovies) {
             const tempList = nowPlayingMovies.results
             setNowPlayingMoviesList(tempList);
         }
     }, [nowPlayingMovies])
-
-    
-
-    React.useEffect(() => {
-        console.log("nowPlayingMoviesList: ", nowPlayingMoviesList);
-    }, [nowPlayingMoviesList])
 
     return (
         <MoviesContext.Provider value={contextValue}>
