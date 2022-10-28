@@ -7,19 +7,11 @@ import ProtectedPage from "../layouts/ProtectedPage";
 export const Home = () => {
 
   const { appUser } = useFierbase();
-  const { nowPlayingMoviesList, nowPlayingMoviesStatus } = useMovies();
-
-  const [nowPlayingList, setNowPlayingList] = React.useState<Array<Movie>>([])
-  const [displayMoviesList, setDisplayMoviesList] = React.useState<boolean>(false)
-
-  React.useEffect(() => {
-    setNowPlayingList(nowPlayingMoviesList);
-  }, [nowPlayingMoviesList])
-
-  React.useEffect(() => {
-    if (nowPlayingList.length > 0)
-      setDisplayMoviesList(true);
-  }, [nowPlayingList, nowPlayingMoviesStatus])
+  const { nowPlayingMovies, 
+          nowPlayingMoviesStatus,
+          popularMoviesStatus,
+          popularMovies
+        } = useMovies();
 
   return (
     <ProtectedPage>
@@ -30,12 +22,12 @@ export const Home = () => {
           {
             <div>
               {nowPlayingMoviesStatus === "error" && <p>Error fetching data</p>}
-              {nowPlayingMoviesStatus === "loading" && <p>Fetching data...</p>}
-              {(nowPlayingMoviesStatus === "success" && displayMoviesList === true) ?
+              {nowPlayingMoviesStatus === "loading" && <p>Fetching data...</p>}              
+              {(nowPlayingMoviesStatus === "success") ?
                 <div>
                   <h1>Now in theatres</h1>
                   {
-                    nowPlayingList.length > 0 && nowPlayingList.map((movie: Movie) =>
+                    (nowPlayingMovies !== undefined && nowPlayingMovies.length > 0) && nowPlayingMovies.map((movie: Movie) =>
                       <table key={movie.id}>
                         <tbody >
                           <tr>
@@ -52,6 +44,33 @@ export const Home = () => {
               }
             </div>
           }
+
+          {
+            <div>
+              {popularMoviesStatus === "error" && <p>Error fetching data</p>}
+              {popularMoviesStatus === "loading" && <p>Fetching data...</p>}              
+              {(popularMoviesStatus === "success") ?
+                <div>
+                  <h1>Popular movies</h1>
+                  {
+                    (popularMovies !== undefined && popularMovies.length > 0) && popularMovies.map((movie: Movie) =>
+                      <table key={movie.id}>
+                        <tbody >
+                          <tr>
+                            <td>{movie.original_title}</td>
+                            <td>{movie.popularity}</td>
+                            <td>{movie.release_date}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    )
+                  }
+                </div>
+                : null
+              }
+            </div>
+          }
+
         </div>
       }
     </ProtectedPage>
