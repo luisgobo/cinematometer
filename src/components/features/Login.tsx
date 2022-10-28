@@ -34,11 +34,9 @@ export const Login = () => {
 
     const handleFormSubmit = async (values: loginFormValues) => {
         try {
-            const user = await login(values.email, values.password);
-            console.log(user);
+            await login(values.email, values.password);            
 
-        } catch (error) {
-            console.log("error found");
+        } catch (error) {            
             console.log(error);
         }
     }

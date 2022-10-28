@@ -4,17 +4,17 @@ import { useNavigate } from "react-router-dom";
 
 const AuthorizedPage: React.FC<PropsWithChildren> = ({children}) => {
 
-    const { firebaseUser, hasAuthLoaded } = useFierbase();
+    const { firebaseUser, displayLoading } = useFierbase();
     const navigate = useNavigate();
 
     React.useEffect(() => {
         if (firebaseUser){
-            console.log('firebase user found')
+            console.log('firebase user found in AuthorizedPage')
             navigate("/");      
         }
     }, [firebaseUser]);    
 
-    if (hasAuthLoaded) {
+    if (displayLoading) {
         return(
             <h1>Charging, please wait...</h1>
         );

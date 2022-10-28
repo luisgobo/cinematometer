@@ -4,21 +4,25 @@ import { useNavigate } from "react-router-dom";
 
 const ProtectedPage: React.FC<PropsWithChildren> = ({children}) => {
 
-    const { firebaseUser, hasAuthLoaded } = useFierbase();
+    const { firebaseUser, displayLoading } = useFierbase();
     const navigate = useNavigate();
+
+    const loadingScreen = () => {
+        return(
+            <h1>Charging, please wait...</h1>
+        );
+    }
 
 
     React.useEffect(() => {
 
-        if (!firebaseUser){            
-            navigate("/login");
+        if (!firebaseUser){  
+                navigate("/login");           
         }
     }, [firebaseUser]);
 
-    if (hasAuthLoaded) {
-        return(
-            <h1>Charging, please wait...</h1>
-        );
+    if (displayLoading) {
+        loadingScreen();
     }
 
     return (

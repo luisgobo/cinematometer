@@ -1,11 +1,10 @@
 import React, { useContext, createContext } from 'react';
 import { initializeApp, FirebaseApp, FirebaseOptions } from 'firebase/app'
-import { Firestore, getFirestore, addDoc, collection, getDoc, DocumentSnapshot, Timestamp, doc, getDocs, query, where } from 'firebase/firestore'
+import { Firestore, getFirestore, addDoc, collection, Timestamp, getDocs, query, where } from 'firebase/firestore'
 
 import {
     getAuth,
-    signInWithEmailAndPassword,
-    signOut,
+    signInWithEmailAndPassword,    
     UserCredential,
     createUserWithEmailAndPassword,
     User,
@@ -18,7 +17,7 @@ export interface FirebaseContextProps {
     app: FirebaseApp | null;
     firebaseUser: User | undefined;
     appUser: AppUser | undefined;
-    hasAuthLoaded: boolean
+    displayLoading: boolean
     login: (
         email: string,
         password: string
@@ -43,7 +42,7 @@ const FirebaseContext = createContext<FirebaseContextProps>({
     app: null,
     firebaseUser: undefined,
     appUser: undefined,
-    hasAuthLoaded: true,
+    displayLoading: true,
     login: () => Promise.resolve(undefined),
     securityRegister: () => Promise.resolve(undefined),
 });
@@ -53,7 +52,7 @@ export const FirebaseProvider = ({ children }: any) => {
     const [db, setDb] = React.useState<Firestore>();
     const [firebaseUser, setFirebaseUser] = React.useState<User | undefined>(undefined);
     const [appUser, setAppUser] = React.useState<AppUser | undefined>(undefined);
-    const [hasAuthLoaded, setHasAuthLoaded] = React.useState(true);
+    const [displayLoading, setDisplayLoading] = React.useState(true);
     const navigate = useNavigate();
 
     const login = async (email: string, password: string) => {
@@ -63,14 +62,8 @@ export const FirebaseProvider = ({ children }: any) => {
             setFirebaseUser(user.user);
 
             //Get app user
-            await getUserDataByEmail(email);                      
-            
-            // if(appUser){
-                 return user;
-            // }
-            // else{
-            //     signOut(auth);
-            // }
+            await getUserDataByEmail(email);                                              
+            return user;            
 
         } catch (error) {
             console.log(error);
@@ -139,9 +132,8 @@ export const FirebaseProvider = ({ children }: any) => {
                     });
             }
 
-        } catch (err) {
-            console.log("Error found");
-            console.log(err);
+        } catch (error) {            
+            console.log(error);
         }
 
 
@@ -149,19 +141,21 @@ export const FirebaseProvider = ({ children }: any) => {
 
     const authStateChanged = React.useCallback(
         async (user: User | null) => {
+            
             if (!user) {
-                setHasAuthLoaded(false);
+                setDisplayLoading(false);
                 return;
-            }
+            }            
 
             setFirebaseUser(user);
-            if(user.email)
-                getUserDataByEmail(user.email);
-
-            setHasAuthLoaded(false);
+            
+            setDisplayLoading(false);
             navigate("/");
 
-        }, [navigate]);
+        }
+    , [navigate]);
+
+    
 
     React.useEffect(() => {
         const app = initializeApp(firebaseCredentials);
@@ -172,14 +166,20 @@ export const FirebaseProvider = ({ children }: any) => {
 
     React.useEffect(() => {
         const unsubscribe = getAuth().onAuthStateChanged(authStateChanged);
+        
+        if(firebaseUser?.email){            
+            getUserDataByEmail(firebaseUser?.email);        
+        }
+
         return () => unsubscribe();
+
     }, [authStateChanged]);
 
     const contextValue: FirebaseContextProps = {
         app,
         firebaseUser,
         appUser,
-        hasAuthLoaded,
+        displayLoading,
         login,
         securityRegister,
     };

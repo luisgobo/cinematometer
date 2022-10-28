@@ -37,7 +37,6 @@ export const Register = () => {
         try {
             await securityRegister(values.email, values.password, values.name);
         } catch (error) {
-            console.log("error found");
             console.log(error);
         }
     }
