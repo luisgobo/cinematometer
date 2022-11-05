@@ -2,7 +2,6 @@ import "react-multi-carousel/lib/styles.css";
 import React, { Fragment } from "react";
 import { Movie } from "../../../models/movie";
 import Section from "../../molecules/Carousel/Section";
-import WithScrollbar from "../../molecules/Carousel/WithScrollbar";
 import SimpleCarousel from "../../molecules/Carousel/SimpleCarousel";
 
 export interface InfoCarouselProps {
