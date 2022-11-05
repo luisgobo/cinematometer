@@ -175,14 +175,24 @@ export const FirebaseProvider = ({ children }: any) => {
 
     }, [authStateChanged]);
 
-    const contextValue: FirebaseContextProps = {
-        app,
-        firebaseUser,
-        appUser,
-        displayLoading,
-        login,
-        securityRegister,
-    };
+    const contextValue: FirebaseContextProps = React.useMemo(
+        () => ({
+            app,
+            firebaseUser,
+            appUser,
+            displayLoading,
+            login,
+            securityRegister,
+        }),
+        [
+            app,
+            firebaseUser,
+            appUser,
+            displayLoading,
+            login,
+            securityRegister,
+        ]
+    );
 
     return (
         <FirebaseContext.Provider value={contextValue}>

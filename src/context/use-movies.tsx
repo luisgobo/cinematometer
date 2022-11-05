@@ -43,22 +43,22 @@ export const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ child
 
     const [moviesPage, setMoviesPage] = React.useState(1);
 
-    const { data: nowPlayingMovies, status: nowPlayingMoviesStatus, error: nowPlayingMoviesError } = useQuery(
+    const { data: nowPlayingMovies, status: nowPlayingMoviesStatus, error: nowPlayingMoviesError } = useQuery<Movie[]>(
         ["nowPlayingData", moviesPage],
         () => getNowPlayingMovies(moviesPage)
     );
 
-    const { data: popularMovies, status: popularMoviesStatus, error: popularMoviesError } = useQuery(
+    const { data: popularMovies, status: popularMoviesStatus, error: popularMoviesError } = useQuery<Movie[]>(
         ["popularData", moviesPage],
         () => getPopularMovies(moviesPage)
     );
 
-    const { data: topRatedMovies, status: topRatedMoviesStatus, error: topRatedMoviesError } = useQuery(
+    const { data: topRatedMovies, status: topRatedMoviesStatus, error: topRatedMoviesError } = useQuery<Movie[]>(
         ["topRatedData", moviesPage],
         () => getTopRatedMovies(moviesPage)
     );
 
-    const { data: upComingMovies, status: upComingMoviesStatus, error: upComingMoviesError } = useQuery(
+    const { data: upComingMovies, status: upComingMoviesStatus, error: upComingMoviesError } = useQuery<Movie[]>(
         ["upComingData", moviesPage],
         () => getUpcomingMovies(moviesPage)
     );
