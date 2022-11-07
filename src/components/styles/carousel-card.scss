@@ -1,0 +1,33 @@
+$shadow: #00000033;
+
+.card {
+    box-shadow: 0 4px 8px 0 $shadow;
+    transition: 0.3s;
+    width: 85%;
+    height: auto;
+    border-width:1px;
+    border-color: red($color: #da4141);
+    
+    //padding: 10px 0px 10px 0px;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px 0 $shadow;
+}
+
+.container {
+    //background-color: blueviolet;
+    padding: 2px 16px;
+}
+
+.image-size {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 60%;
+}
+
+.image-item{
+    //background-color: purple;
+    padding-left: 0px;    
+}

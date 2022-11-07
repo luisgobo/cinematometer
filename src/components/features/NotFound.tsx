@@ -1,4 +1,4 @@
-import './styles/not-found.scss';
+import '../styles/not-found.scss';
 
 export default function ErrorPage() {
 
