@@ -1,6 +1,6 @@
 import { Movie } from "../../../models/movie"
 import { Image } from "semantic-ui-react";
-import '../../styles/carousel-card.scss';
+import '../../../styles/carousel-card.scss';
 
 export interface CarouselCardProps {
     movie: Movie
@@ -9,15 +9,9 @@ export interface CarouselCardProps {
 export const CarouselCard: React.FC<CarouselCardProps> = ({
     movie
 }) => {
-
-    const movieInfo = movie ?? {};
-    console.log("movieInfo", movieInfo)
-    console.log("movie", movie)
-    console.log("movie genres", movie.genre_ids)
-
     return (
 
-        <div className="card">
+        <div className="card" key={movie?.id}>
             <Image
                 draggable={false}
                 className="image-size"

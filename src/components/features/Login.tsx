@@ -1,7 +1,7 @@
 import React from "react";
 import { Formik } from "formik";
 import * as Yup from 'yup'
-import "./styles/register.css"
+import "../../styles/register.scss"
 import { useFierbase } from '../../context/use-firebase';
 import { TextField, Link } from '@mui/material';
 import styled from '@emotion/styled'
@@ -47,7 +47,7 @@ export const Login = () => {
 
     return (
         <AuthorizedPage>
-            <main>
+            <main className="main">
                 <Formik<loginFormValues>
                     initialValues={{
                         email: '',

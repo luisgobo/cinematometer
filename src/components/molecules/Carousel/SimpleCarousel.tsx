@@ -44,10 +44,10 @@ export const SimpleCard: React.FC<SimpleCardProps> = ({
             responsive={responsive}
             autoPlay={true}
             infinite={true}
-            focusOnSelect={true}
+            focusOnSelect={false}
         >
             {
-                movies.slice(0, 5).map(movieInfo => <CarouselCard movie={movieInfo} /> )
+                movies.slice(0, 4).map(movieInfo => <CarouselCard movie={movieInfo} key={movieInfo.id} /> )
             }
         </Carousel>
     );
