@@ -8,13 +8,16 @@ export interface InfoCarouselProps {
     title: string;
     movieList: Movie[];
     listStatus: string;
+    toggleModal: Function
 }
 
 export const InfoCarousel: React.FC<InfoCarouselProps> = ({
     title,
     movieList,
     listStatus,
-}) => {
+    toggleModal
+}) => {    
+
     return (
         <>
             <div>
@@ -26,7 +29,7 @@ export const InfoCarousel: React.FC<InfoCarouselProps> = ({
                             <Fragment>
                                 <Section>
                                     <h1>{title}</h1>
-                                    <SimpleCarousel movies={movieList} />
+                                    <SimpleCarousel movies={movieList} toggleModal={toggleModal} />
                                 </Section>
                             </Fragment>
                         </div>

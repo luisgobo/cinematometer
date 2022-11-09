@@ -2,14 +2,17 @@ import React from "react";
 import { deviceType } from "react-device-detect";
 import Carousel from "react-multi-carousel";
 import { Movie } from "../../../models/movie";
-import { CarouselCard } from "../../organisms/Carousel/CarouselCard";
+import { CarouselCard } from "./CarouselCard";
 
-export interface SimpleCardProps {
-    movies: Movie[]
+export interface SimpleCarouselProps {
+    movies: Movie[];
+    toggleModal: Function;
+
 }
 
-export const SimpleCard: React.FC<SimpleCardProps> = ({
-    movies
+export const SimpleCarousel: React.FC<SimpleCarouselProps> = ({
+    movies,
+    toggleModal
 }) => {
 
     const responsive = {
@@ -36,21 +39,21 @@ export const SimpleCard: React.FC<SimpleCardProps> = ({
     };
 
     return (
-        <Carousel
-            ssr
-            partialVisbile
-            deviceType={deviceType}
-            itemClass="image-item"
-            responsive={responsive}
-            autoPlay={true}
-            infinite={true}
-            focusOnSelect={false}
-        >
-            {
-                movies.slice(0, 4).map(movieInfo => <CarouselCard movie={movieInfo} key={movieInfo.id} /> )
-            }
-        </Carousel>
+            <Carousel
+                ssr
+                partialVisbile
+                deviceType={deviceType}
+                itemClass="image-item"
+                responsive={responsive}
+                autoPlay={true}
+                infinite={true}
+                focusOnSelect={false}
+            >
+                {
+                    movies.slice(0, 4).map(movieInfo => <CarouselCard movie={movieInfo} toggleModal={toggleModal} key={movieInfo.id} />)
+                }
+            </Carousel>
     );
 }
 
-export default SimpleCard;
+export default SimpleCarousel;

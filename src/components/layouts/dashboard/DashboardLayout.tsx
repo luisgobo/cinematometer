@@ -6,10 +6,12 @@ import { DashboardContent } from "./DashboardContent";
 import "../../../styles/dashboard.scss"
 
 type DashboardLayoutProps = {
-    children: JSX.Element | JSX.Element[],
+    children: JSX.Element | JSX.Element[]
 };
 
-export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ 
+    children 
+}) => {
     return (
         <main>
             <TitleBar />

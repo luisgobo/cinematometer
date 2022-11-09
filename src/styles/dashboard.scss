@@ -49,6 +49,16 @@ $sideBarwidth: 14rem;
     display: flex;
 }
 
+.div-vertical-scroll {
+    flex: 1;    
+    overflow-y: scroll;
+}
+
+.div-horizontal-scroll {
+    flex: 1;    
+    overflow-x: scroll;
+}
+
 .sidebar {            
     background-color: $black;
     width: $sideBarwidth;
@@ -72,6 +82,7 @@ $sideBarwidth: 14rem;
 .dashboard-content{
     background-color: lightseagreen;
     width: calc(100vw - ($sideBarwidth + 1px));
+    height: calc(100vh - ($headerHeight + 1px));        
 }
 
 @media screen and (max-height: 450px) {
