@@ -4,7 +4,7 @@ import ProtectedPage from "../layouts/ProtectedPage";
 import { InfoCarousel } from "../organisms/Carousel/InfoCarousel";
 import { Movie } from "../../models/movie";
 import { DashboardLayout } from "../layouts/dashboard/DashboardLayout";
-import "../../styles/popupModal.scss"
+import "../../styles/popup-modal.scss"
 import { MovieInfo } from "../organisms/Movie/MovieInfo";
 
 export const Home = () => {
@@ -18,9 +18,7 @@ export const Home = () => {
     nowPlayingMoviesStatus,
     popularMoviesStatus,
     topRatedMoviesStatus,
-    upComingMoviesStatus,
-
-    selectedMovieId: selectedMovie,
+    upComingMoviesStatus,    
     toggleModal
 
   } = useMovies();
@@ -33,15 +31,7 @@ export const Home = () => {
     <ProtectedPage>
 
       <div className="modal-background" onClick={toggleModal}></div>
-      <div className="modal">
-        <h2>Modal Window</h2>
-        <p>
-          You have opened the modal, they are great for confirming actions or
-          displaying critical information.
-        </p>
-        <p>
-          Selected Movie ID: {selectedMovie}
-        </p>
+      <div className="modal">        
         <MovieInfo/>
       </div>
       <DashboardLayout>

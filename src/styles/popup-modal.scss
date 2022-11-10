@@ -1,3 +1,9 @@
+
+$modalBackgroudColorPrimary:#37353b;
+$modalBackgroudColorSecondary: #00000080;
+$modalBackgroudColorTertiary: #f9f9f9;
+$p-marginColor: #ffffff80;
+
 @keyframes background-in {
     0% {
         scale: 0 0.005;
@@ -24,7 +30,7 @@
     opacity: 0;
     visibility: hidden;
     transform: scale(1, 1);
-    background: rgba(0, 0, 0, 0.5);
+    background: $modalBackgroudColorSecondary;
     transition: 0.5s;
 }
 
@@ -54,8 +60,8 @@ body.open .modal-background {
     position: fixed;
     top: 50%;
     left: 50%;
-    background: #37353b;
-    color: #f9f9f9;
+    background: $modalBackgroudColorPrimary;
+    color: $modalBackgroudColorTertiary;
     padding: 48px 40px;
     width: 300px;
     border-radius: 12px;
@@ -86,5 +92,5 @@ h2 {
 
 p {
     margin: 0;
-    color: rgba(255, 255, 255, 0.5);
+    color: $p-marginColor;
 }
