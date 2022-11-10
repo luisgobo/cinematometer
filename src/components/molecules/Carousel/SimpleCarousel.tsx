@@ -6,13 +6,10 @@ import { CarouselCard } from "./CarouselCard";
 
 export interface SimpleCarouselProps {
     movies: Movie[];
-    toggleModal: Function;
-
 }
 
 export const SimpleCarousel: React.FC<SimpleCarouselProps> = ({
-    movies,
-    toggleModal
+    movies,    
 }) => {
 
     const responsive = {
@@ -39,20 +36,23 @@ export const SimpleCarousel: React.FC<SimpleCarouselProps> = ({
     };
 
     return (
-            <Carousel
-                ssr
-                partialVisbile
-                deviceType={deviceType}
-                itemClass="image-item"
-                responsive={responsive}
-                autoPlay={true}
-                infinite={true}
-                focusOnSelect={false}
-            >
-                {
-                    movies.slice(0, 4).map(movieInfo => <CarouselCard movie={movieInfo} toggleModal={toggleModal} key={movieInfo.id} />)
-                }
-            </Carousel>
+        <Carousel
+            ssr
+            partialVisbile
+            deviceType={deviceType}
+            itemClass="image-item"
+            responsive={responsive}
+            autoPlay={true}
+            infinite={true}
+            focusOnSelect={false}
+        >
+            {
+                movies.slice(0, 4)
+                    .map(
+                        movieInfo => <CarouselCard movie={movieInfo} key={movieInfo.id} />
+                    )
+            }
+        </Carousel>
     );
 }
 

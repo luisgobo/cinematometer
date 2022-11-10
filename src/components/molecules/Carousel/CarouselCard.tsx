@@ -1,18 +1,23 @@
 import { Movie } from "../../../models/movie"
 import { Image } from "semantic-ui-react";
 import '../../../styles/carousel-card.scss';
+import { useMovies } from "../../../context/use-movies";
 
 export interface CarouselCardProps {
     movie: Movie;
-    toggleModal: Function;
 }
 
 export const CarouselCard: React.FC<CarouselCardProps> = ({
-    movie,
-    toggleModal
+    movie,    
 }) => {
 
-    const displayModal = () => {    
+    const{
+        setSelectedMovie,
+        toggleModal
+    } = useMovies();
+
+    const displayModal = (movieId: number) => {
+        setSelectedMovie(movieId);
         return toggleModal();
     }
 
@@ -27,7 +32,7 @@ export const CarouselCard: React.FC<CarouselCardProps> = ({
                 <div className="container">
                     <h4><b>{movie?.title}</b> ({movie?.original_title}) </h4>
                     <p>Vote average: {movie?.vote_average}/10</p>                    
-                    <button onClick={displayModal}>More details</button>
+                    <button className="button" onClick={() => displayModal(movie?.id)} >More details</button>
                 </div>
             </div>
         </>

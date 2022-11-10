@@ -7,15 +7,14 @@ import SimpleCarousel from "../../molecules/Carousel/SimpleCarousel";
 export interface InfoCarouselProps {
     title: string;
     movieList: Movie[];
-    listStatus: string;
-    toggleModal: Function
+    listStatus: string;    
 }
 
 export const InfoCarousel: React.FC<InfoCarouselProps> = ({
     title,
     movieList,
     listStatus,
-    toggleModal
+    //toggleModal
 }) => {    
 
     return (
@@ -29,7 +28,8 @@ export const InfoCarousel: React.FC<InfoCarouselProps> = ({
                             <Fragment>
                                 <Section>
                                     <h1>{title}</h1>
-                                    <SimpleCarousel movies={movieList} toggleModal={toggleModal} />
+                                    {/* <SimpleCarousel movies={movieList} toggleModal={toggleModal} /> */}
+                                    <SimpleCarousel movies={movieList}/>
                                 </Section>
                             </Fragment>
                         </div>

@@ -1,10 +1,10 @@
-import React, { useContext, createContext } from 'react';
+import React, { useContext, createContext, useCallback } from 'react';
 import { initializeApp, FirebaseApp, FirebaseOptions } from 'firebase/app'
 import { Firestore, getFirestore, addDoc, collection, Timestamp, getDocs, query, where } from 'firebase/firestore'
 
 import {
     getAuth,
-    signInWithEmailAndPassword,    
+    signInWithEmailAndPassword,
     UserCredential,
     createUserWithEmailAndPassword,
     User,
@@ -55,45 +55,44 @@ export const FirebaseProvider = ({ children }: any) => {
     const [displayLoading, setDisplayLoading] = React.useState(true);
     const navigate = useNavigate();
 
-    const login = async (email: string, password: string) => {
+    const login = useCallback(async (email: string, password: string) => {        
         try {
             const auth = getAuth();
             const user = await signInWithEmailAndPassword(auth, email, password);
             setFirebaseUser(user.user);
 
             //Get app user
-            await getUserDataByEmail(email);                                              
-            return user;            
+            await getUserDataByEmail(email);
+            return user;
 
+        } catch (error) {
+            console.log(error);
+        }
+    }, [])
+
+    const getUserDataByEmail = async (email: string) => {
+        try {
+
+            //Get app user
+
+            if (db) {
+                const queryResult = query(collection(db, "users"), where("email", "==", email));
+                const querySnapshot = await getDocs(queryResult);
+                querySnapshot.forEach((doc) => {
+                    const result: AppUser = {
+                        authenticationId: doc.data().authenticationId,
+                        name: doc.data().name,
+                        email: doc.data().email
+                    };
+                    setAppUser(result);
+                });
+            }
         } catch (error) {
             console.log(error);
         }
     };
 
-    const getUserDataByEmail = async (email: string) => {
-        try {
-            
-            //Get app user
-
-            if (db) {
-                const queryResult = query(collection(db, "users"), where("email", "==", email));
-                const querySnapshot = await getDocs(queryResult);                
-                querySnapshot.forEach((doc) => {      
-                    const result: AppUser  =  {
-                        authenticationId: doc.data().authenticationId,
-                        name: doc.data().name,
-                        email: doc.data().email
-                    };                    
-                    setAppUser(result);
-                });            
-            }            
-        } catch (error) {
-            console.log(error);
-        }        
-    };
-
-    const securityRegister = async (email: string, password: string, name: string) => {
-
+    const securityRegister = useCallback(async (email: string, password: string, name: string) => {
         try {
             //Create SecurityCredentials
             const auth = getAuth();
@@ -102,15 +101,13 @@ export const FirebaseProvider = ({ children }: any) => {
 
             //create App User
             if (userCredentials) {
-                userRegister(userCredentials.user.uid,email, name);
+                userRegister(userCredentials.user.uid, email, name);
             }
-
             return userCredentials;
         } catch (error) {
             console.log(error);
         }
-
-    };
+    }, [])
 
     const userRegister = async (id: string, email: (string | null), name: string) => {
 
@@ -132,7 +129,7 @@ export const FirebaseProvider = ({ children }: any) => {
                     });
             }
 
-        } catch (error) {            
+        } catch (error) {
             console.log(error);
         }
 
@@ -141,21 +138,19 @@ export const FirebaseProvider = ({ children }: any) => {
 
     const authStateChanged = React.useCallback(
         async (user: User | null) => {
-            
+
             if (!user) {
                 setDisplayLoading(false);
                 return;
-            }            
+            }
 
             setFirebaseUser(user);
-            
+
             setDisplayLoading(false);
             navigate("/");
 
         }
-    , [navigate]);
-
-    
+        , [navigate]);
 
     React.useEffect(() => {
         const app = initializeApp(firebaseCredentials);
@@ -166,9 +161,9 @@ export const FirebaseProvider = ({ children }: any) => {
 
     React.useEffect(() => {
         const unsubscribe = getAuth().onAuthStateChanged(authStateChanged);
-        
-        if(firebaseUser?.email){            
-            getUserDataByEmail(firebaseUser?.email);        
+
+        if (firebaseUser?.email) {
+            getUserDataByEmail(firebaseUser?.email);
         }
 
         return () => unsubscribe();

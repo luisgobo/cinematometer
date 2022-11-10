@@ -19,30 +19,17 @@ export const Home = () => {
     topRatedMoviesStatus,
     upComingMoviesStatus,
 
+    selectedMovie,
+    toggleModal
+
   } = useMovies();
 
   function processMovieList(movies: Movie[] | undefined) {
     return movies === undefined ? [] : movies;
   }
 
-  const toggleModal = () => {
-
-  const bodyClassList = document.body.classList;
-    if (bodyClassList.contains("open")) {
-        console.log("is Open")
-        bodyClassList.remove("open");
-        bodyClassList.add("closed");
-    } else {
-        console.log("is Closed")
-        bodyClassList.remove("closed");
-        bodyClassList.add("open");
-    }
-
-    console.log("bodyClassList:", bodyClassList)
-  };
-
   return (
-    <ProtectedPage>     
+    <ProtectedPage>
 
       <div className="modal-background" onClick={toggleModal}></div>
       <div className="modal">
@@ -51,6 +38,9 @@ export const Home = () => {
           You have opened the modal, they are great for confirming actions or
           displaying critical information.
         </p>
+        <p>
+          Selected Movie ID: {selectedMovie}
+        </p>
       </div>
       <DashboardLayout>
         {
@@ -58,26 +48,22 @@ export const Home = () => {
             <InfoCarousel
               title={"Now in theatres"}
               movieList={processMovieList(nowPlayingMovies)}
-              listStatus={nowPlayingMoviesStatus}
-              toggleModal ={toggleModal}
+              listStatus={nowPlayingMoviesStatus}              
             />
             <InfoCarousel
               title={"Popular movies"}
               movieList={processMovieList(popularMovies)}
-              listStatus={popularMoviesStatus}
-              toggleModal ={toggleModal}
+              listStatus={popularMoviesStatus}              
             />
             <InfoCarousel
               title={"Top Rated movies"}
               movieList={processMovieList(topRatedMovies)}
-              listStatus={topRatedMoviesStatus}
-              toggleModal ={toggleModal}
+              listStatus={topRatedMoviesStatus}              
             />
             <InfoCarousel
               title={"Upcoming movies"}
               movieList={processMovieList(upComingMovies)}
-              listStatus={upComingMoviesStatus}
-              toggleModal ={toggleModal}
+              listStatus={upComingMoviesStatus}              
             />
           </div>
         }

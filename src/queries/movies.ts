@@ -3,28 +3,28 @@ import axios from "axios";
 import { Genre } from "../models/Genre";
 import { Movie } from "../models/movie";
 
-export const getNowPlayingMovies = async (page: number, genres: Genre[] | undefined) => {
+export const getNowPlayingMovies = async (page: number) => {
     const { data } = await axios.get(
         `${process.env.REACT_APP_MOVIES_API_ENDPOINT}/movie/now_playing?api_key=${process.env.REACT_APP_MOVIES_API_KEY}&language=en-US&page=${page}`
     );
     return data?.results;
 };
 
-export const getPopularMovies = async (page: number, genres: Genre[] | undefined) => {
+export const getPopularMovies = async (page: number) => {
     const { data } = await axios.get(
         `${process.env.REACT_APP_MOVIES_API_ENDPOINT}/movie/popular?api_key=${process.env.REACT_APP_MOVIES_API_KEY}&language=en-US&page=${page}`
     );
     return data?.results;
 };
 
-export const getTopRatedMovies = async (page: number, genres: Genre[] | undefined) => {
+export const getTopRatedMovies = async (page: number) => {
     const { data } = await axios.get(
         `${process.env.REACT_APP_MOVIES_API_ENDPOINT}/movie/top_rated?api_key=${process.env.REACT_APP_MOVIES_API_KEY}&language=en-US&page=${page}`
     );
     return data?.results;
 };
 
-export const getUpcomingMovies = async (page: number, genres: Genre[] | undefined) => {
+export const getUpcomingMovies = async (page: number) => {
     const { data } = await axios.get(
         `${process.env.REACT_APP_MOVIES_API_ENDPOINT}/movie/upcoming?api_key=${process.env.REACT_APP_MOVIES_API_KEY}&language=en-US&page=${page}`
     );
@@ -46,13 +46,5 @@ export const combined = async (page: number) => {
         axios.get(`${process.env.REACT_APP_MOVIES_API_ENDPOINT}/genre/movie/list?api_key=${process.env.REACT_APP_MOVIES_API_KEY}&language=en-US`)
     ]);
 
-    return [movies.data, genres.data];
-
-    // Make third request using responses from the first two
-    
-
-    // const { data } = await axios.get(
-    //     `${process.env.REACT_APP_MOVIES_API_ENDPOINT}/genre/movie/list?api_key=${process.env.REACT_APP_MOVIES_API_KEY}&language=en-US`        
-    // );
-    // return data?.results;
+    return [movies.data, genres.data];      
 };
