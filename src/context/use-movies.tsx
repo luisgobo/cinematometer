@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useQuery } from 'react-query';
 import { Genre } from '../models/Genre';
 import { Movie } from '../models/movie';
@@ -22,8 +22,10 @@ interface MovieApiContextProps {
 
     moviesPage: number,
     setMoviesPage: any
-    selectedMovie: number,
-    setSelectedMovie: any,
+    selectedMovieId: number,
+    selectedMovieRate: number,
+    setSelectedMovieId: any,
+    setSelectedMovieRate: any
     toggleModal: any,
 
 }
@@ -46,8 +48,10 @@ const MoviesContext = React.createContext<MovieApiContextProps>({
 
     moviesPage: 0,
     setMoviesPage: {},
-    selectedMovie: 0,
-    setSelectedMovie: {},
+    selectedMovieId: 0,
+    selectedMovieRate: 0,
+    setSelectedMovieId: {},
+    setSelectedMovieRate: {},
     toggleModal: {},
 
 });
@@ -55,24 +59,8 @@ const MoviesContext = React.createContext<MovieApiContextProps>({
 export const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 
     const [moviesPage, setMoviesPage] = React.useState(1);
-    const [selectedMovie, setSelectedMovie] = React.useState(0);
-
-    // const toggleModal = () => {
-
-    //     const bodyClassList = document.body.classList;
-    //     if (bodyClassList.contains("open")) {
-    //         console.log("is Open")
-    //         bodyClassList.remove("open");
-    //         bodyClassList.add("closed");
-    //     } else {
-    //         console.log("is Closed")
-    //         console.log(selectedMovie)
-    //         bodyClassList.remove("closed");
-    //         bodyClassList.add("open");
-    //     }
-
-    //     console.log("bodyClassList:", bodyClassList)
-    // };
+    const [selectedMovieId, setSelectedMovieId] = React.useState(0);
+    const [selectedMovieRate, setSelectedMovieRate] = React.useState(0);
 
     const toggleModal = useCallback(() => {
         const bodyClassList = document.body.classList;
@@ -133,8 +121,10 @@ export const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ child
 
             moviesPage,
             setMoviesPage,
-            selectedMovie,
-            setSelectedMovie,
+            selectedMovieId,
+            selectedMovieRate,
+            setSelectedMovieId,
+            setSelectedMovieRate,
             toggleModal,
         }),
         [
@@ -155,8 +145,10 @@ export const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ child
             
             moviesPage,
             setMoviesPage,
-            selectedMovie,
-            setSelectedMovie,
+            selectedMovieId,
+            setSelectedMovieId,
+            selectedMovieRate,
+            setSelectedMovieRate,
             toggleModal,
         ]
     );

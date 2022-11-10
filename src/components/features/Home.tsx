@@ -5,6 +5,7 @@ import { InfoCarousel } from "../organisms/Carousel/InfoCarousel";
 import { Movie } from "../../models/movie";
 import { DashboardLayout } from "../layouts/dashboard/DashboardLayout";
 import "../../styles/popupModal.scss"
+import { MovieInfo } from "../organisms/Movie/MovieInfo";
 
 export const Home = () => {
 
@@ -19,7 +20,7 @@ export const Home = () => {
     topRatedMoviesStatus,
     upComingMoviesStatus,
 
-    selectedMovie,
+    selectedMovieId: selectedMovie,
     toggleModal
 
   } = useMovies();
@@ -41,6 +42,7 @@ export const Home = () => {
         <p>
           Selected Movie ID: {selectedMovie}
         </p>
+        <MovieInfo/>
       </div>
       <DashboardLayout>
         {

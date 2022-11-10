@@ -47,7 +47,7 @@ export const SimpleCarousel: React.FC<SimpleCarouselProps> = ({
             focusOnSelect={false}
         >
             {
-                movies.slice(0, 4)
+                movies.slice(0, 19)
                     .map(
                         movieInfo => <CarouselCard movie={movieInfo} key={movieInfo.id} />
                     )

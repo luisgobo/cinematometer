@@ -27,8 +27,7 @@ export const InfoCarousel: React.FC<InfoCarouselProps> = ({
                         <div>
                             <Fragment>
                                 <Section>
-                                    <h1>{title}</h1>
-                                    {/* <SimpleCarousel movies={movieList} toggleModal={toggleModal} /> */}
+                                    <h1>{title}</h1>                                    
                                     <SimpleCarousel movies={movieList}/>
                                 </Section>
                             </Fragment>
