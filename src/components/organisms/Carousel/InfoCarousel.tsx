@@ -13,8 +13,7 @@ export interface InfoCarouselProps {
 export const InfoCarousel: React.FC<InfoCarouselProps> = ({
     title,
     movieList,
-    listStatus,
-    //toggleModal
+    listStatus,    
 }) => {    
 
     return (
@@ -27,7 +26,7 @@ export const InfoCarousel: React.FC<InfoCarouselProps> = ({
                         <div>
                             <Fragment>
                                 <Section>
-                                    <h1>{title}</h1>                                    
+                                    <h1 className="carousel-title">{title}</h1>                                    
                                     <SimpleCarousel movies={movieList}/>
                                 </Section>
                             </Fragment>

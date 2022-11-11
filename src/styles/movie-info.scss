@@ -1,3 +1,11 @@
+$shadow: #00000033;
+$baseColor: #515151;
+$secondary-color: #2b2a2a;
+$tertiary-color: #2b2a2c;
+$quaternary: #1a1a1a;
+$text-primary-color: #f9f9f9;
+$text-secondary-color: #ffffff80;
+
 @import url(https://fonts.googleapis.com/css?family=Lato:400,300,700);
 @import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
 
@@ -138,7 +146,8 @@ a:hover {
     height: 200px;
     font-size: 16px;
     line-height: 26px;
-    color: #B1B0AC;    
+    color: $secondary-color; // #B1B0AC;
+    background-color: $baseColor;
 }
 
 .movie-categories {

@@ -1,8 +1,4 @@
-
-$modalBackgroudColorPrimary:#37353b;
-$modalBackgroudColorSecondary: #00000080;
-$modalBackgroudColorTertiary: #f9f9f9;
-$p-marginColor: #ffffff80;
+@import './color-palette.scss';
 
 @keyframes background-in {
     0% {
@@ -22,7 +18,7 @@ $p-marginColor: #ffffff80;
 .modal-background {
     position: fixed;
     top: 0;
-    left: 0;
+    left: 0; 
     width: 100%;
     height: 100%;
     display: flex;
@@ -30,7 +26,7 @@ $p-marginColor: #ffffff80;
     opacity: 0;
     visibility: hidden;
     transform: scale(1, 1);
-    background: $modalBackgroudColorSecondary;
+    background: secondary-color;//$modalBackgroudColorSecondary;
     transition: 0.5s;
 }
 
@@ -60,8 +56,8 @@ body.open .modal-background {
     position: fixed;
     top: 50%;
     left: 50%;
-    background: $modalBackgroudColorPrimary;
-    color: $modalBackgroudColorTertiary;
+    background-color: $black; //$modalBackgroudColorPrimary;    
+    color: $text-primary-color;//$modalBackgroudColorTertiary;
     padding: 10px 40px;
     width: 860px;
     height: 100%;

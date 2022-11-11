@@ -3,6 +3,8 @@ $gray: #c4ccde;
 $hoverGray: #818181;
 $black: #111111;
 $baseColor: #515151;
+$secondaryColor: #2b2a2a;
+
 
 $headerHeight: 60px;
 $sideBarwidth: 14rem;
@@ -89,7 +91,7 @@ $sideBarwidth: 14rem;
 }
 
 .dashboard-content {
-    background-color: lightseagreen;
+    background-color: $secondaryColor;
     width: calc(100vw - ($sideBarwidth + 1px));
     height: calc(100vh - ($headerHeight + 1px));
 }
