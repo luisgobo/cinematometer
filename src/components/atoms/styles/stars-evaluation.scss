@@ -11,6 +11,10 @@ $starSelected: #b1a500;
     border: 0;
 }
 
+.rate.read-only {
+    pointer-events: none;
+}
+
 /* Hide radio */
 .rate > input {
     display: none;

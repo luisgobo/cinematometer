@@ -30,8 +30,9 @@ export const Home = () => {
   return (
     <ProtectedPage>
 
-      <div className="modal-background" onClick={toggleModal}></div>
-      <div className="modal">        
+      <div className="modal-background" onClick={toggleModal}/>
+      <div className="modal">
+        <span className="close-modal" onClick={toggleModal}>X</span>        
         <MovieInfo/>
       </div>
       <DashboardLayout>

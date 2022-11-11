@@ -29,7 +29,7 @@ a:hover {
 .movie-info-container {
     margin: 0 auto;
     width: 780px;
-    height: 640px;
+    //height: 640px;
     background: #A9A8A3;
     border-radius: 5px;
     position: relative;
@@ -38,13 +38,14 @@ a:hover {
 }
 
 .hero {
-    height: 342px;
+    height: 350px;
     margin: 0;
     position: relative;
     overflow: hidden;
     z-index: 1;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+    padding-top: 1px;
 
 }
 
@@ -78,9 +79,7 @@ a:hover {
 }
 
 .details {
-
     padding: 165px 0 0 280px;
-
 
     .title1 {
         color: white;
@@ -210,40 +209,6 @@ fieldset,
 label {
     margin: 0;
     padding: 0;
-}
-
-/****** Style Star Rating Widget *****/
-
-.rating {
-    border: none;
-    float: left;
-}
-
-.rating.read-only {
-    pointer-events: none;
-}
-
-.rating>input {
-    display: none;
-}
-
-.rating>label:before {
-    margin: 5px;
-    margin-top: 0;
-    font-size: 1em;
-    font-family: FontAwesome;
-    display: inline-block;
-    content: "\f005";
-}
-
-.rating>.half:before {
-    content: "\f089";
-    position: absolute;
-}
-
-.rating>label {
-    color: #ddd;
-    float: right;
 }
 
 /***** CSS Magic to Highlight Stars on Hover *****/
