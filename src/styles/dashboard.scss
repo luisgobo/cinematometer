@@ -1,67 +1,74 @@
-
 $light: #f1f1f1;
 $gray: #c4ccde;
 $hoverGray: #818181;
 $black: #111111;
+$baseColor: #515151;
 
 $headerHeight: 60px;
 $sideBarwidth: 14rem;
 
-*{
+* {
     margin: 0;
     padding: 0;
 }
 
-.title-bar{    
+.title-bar {
     background-color: $light;
     border-bottom: 1px solid $gray;
-    display: flex;    
+    display: flex;
     position: static;
     width: 100%;
     height: $headerHeight;
 }
 
-.app-tittle{
-    background-color: lightgreen;
+.img-title {
+    width: 70%;
+    margin-top: -15px;
+}
+
+.app-tittle {
+    background-color: $baseColor;
     width: 20%;
     height: 100%;
     float: left;
 }
 
-.search-criteria{
-    background-color: lightcoral;
-    width: 60%;    
+.search-criteria {
+    background-color: $baseColor;
+    width: 60%;
     overflow: auto;
 }
 
-.user-info{
+.user-info {
     position: relative;
     padding-top: 20px;
-    background-color: lightblue;
+    background-color: $baseColor;
     margin-left: auto; 
-    margin-right: 0;
+    margin-right: 0px;
     width: 20%;
     float: right;
+    text-align: right;
+    padding-right: 20px;
 
 }
 
-.flex{
+.flex {
     display: flex;
 }
 
 .div-vertical-scroll {
-    flex: 1;    
+    flex: 1;
     overflow-y: scroll;
     overflow: auto;
 }
 
 .div-horizontal-scroll {
-    flex: 1;    
+    flex: 1;
     overflow-x: scroll;
     overflow: auto;
 }
 
-.sidebar {            
+.sidebar {
     background-color: $black;
     width: $sideBarwidth;
     height: calc(100vh - ($headerHeight + 1px));
@@ -81,10 +88,10 @@ $sideBarwidth: 14rem;
     color: $light;
 }
 
-.dashboard-content{
+.dashboard-content {
     background-color: lightseagreen;
     width: calc(100vw - ($sideBarwidth + 1px));
-    height: calc(100vh - ($headerHeight + 1px));        
+    height: calc(100vh - ($headerHeight + 1px));
 }
 
 @media screen and (max-height: 450px) {
@@ -120,4 +127,4 @@ $sideBarwidth: 14rem;
 
 
 
-*/ 
+*/

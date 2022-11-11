@@ -37,9 +37,7 @@ export const MovieInfo = () => {
                 {(specificMovieStatus === "success" && movie !== undefined) ?
                     <div>
                         <div className="movie-card">
-
                             <div className="movie-info-container">
-
                                 <a href={movie?.homepage}>
                                     <img
                                         alt={movie?.title}
@@ -47,7 +45,6 @@ export const MovieInfo = () => {
                                         src={`${process.env.REACT_APP_IMAGES_ENDPOINT}/${movie?.poster_path}`}
                                     />
                                 </a>
-
                                 <div className="hero" style={{
                                     backgroundImage: movie?.belongs_to_collection ?
                                         `url(${process.env.REACT_APP_IMAGES_ENDPOINT}/${movie?.belongs_to_collection.backdrop_path})` :
