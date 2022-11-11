@@ -74,7 +74,7 @@ export const MovieInfo = () => {
                                         </ul>
                                     </div>
                                     <div className="movie-overview">
-                                        <p>
+                                        <p className="div-vertical-scroll">
                                             {movie?.overview}
                                         </p>
                                     </div>

@@ -52,11 +52,13 @@ $sideBarwidth: 14rem;
 .div-vertical-scroll {
     flex: 1;    
     overflow-y: scroll;
+    overflow: auto;
 }
 
 .div-horizontal-scroll {
     flex: 1;    
     overflow-x: scroll;
+    overflow: auto;
 }
 
 .sidebar {            
