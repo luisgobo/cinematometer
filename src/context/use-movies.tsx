@@ -2,7 +2,8 @@ import React, { useCallback, useContext } from 'react';
 import { useQuery } from 'react-query';
 import { Genre } from '../models/Genre';
 import { Movie } from '../models/movie';
-import { getGenres, getNowPlayingMovies, getPopularMovies, getTopRatedMovies, getUpcomingMovies } from '../queries/movies';
+import { MovieDetails } from '../models/movieDetails';
+import { getGenres, getNowPlayingMovies, getPopularMovies, getSpecificMovie, getTopRatedMovies, getUpcomingMovies } from '../queries/movies';
 
 interface MovieApiContextProps {
     nowPlayingMovies: Movie[] | undefined;
@@ -20,14 +21,17 @@ interface MovieApiContextProps {
     topRatedMoviesError: any,
     upComingMoviesError: any,
 
+    specificMovie: MovieDetails | undefined,
+    specificMovieStatus: any,
+    specificMovieError: any,
+
     moviesPage: number,
     setMoviesPage: any
     selectedMovieId: number,
     selectedMovieRate: number,
     setSelectedMovieId: any,
     setSelectedMovieRate: any
-    toggleModal: any,
-
+    toggleModal: any,    
 }
 
 const MoviesContext = React.createContext<MovieApiContextProps>({
@@ -46,13 +50,17 @@ const MoviesContext = React.createContext<MovieApiContextProps>({
     topRatedMoviesError: {},
     upComingMoviesError: {},
 
+    specificMovie: undefined,
+    specificMovieStatus: {},
+    specificMovieError: {},
+
     moviesPage: 0,
     setMoviesPage: {},
     selectedMovieId: 0,
     selectedMovieRate: 0,
     setSelectedMovieId: {},
     setSelectedMovieRate: {},
-    toggleModal: {},
+    toggleModal: {},    
 
 });
 
@@ -96,11 +104,15 @@ export const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ child
         () => getUpcomingMovies(moviesPage)
     );
 
+    const { data: specificMovie, status: specificMovieStatus, error: specificMovieError } = useQuery<MovieDetails>(
+        ["specificData", selectedMovieId],
+        () => getSpecificMovie(selectedMovieId)
+    );
+
     const { data: genres, status: genresStatus, error: genresError } = useQuery<Genre[]>(
         ["genresData", moviesPage],
         () => getGenres(moviesPage)
     );
-
 
     const contextValue: MovieApiContextProps = React.useMemo(
         () => ({
@@ -119,13 +131,17 @@ export const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ child
             topRatedMoviesError,
             upComingMoviesError,
 
+            specificMovie,
+            specificMovieStatus,
+            specificMovieError,
+
             moviesPage,
             setMoviesPage,
             selectedMovieId,
             selectedMovieRate,
             setSelectedMovieId,
             setSelectedMovieRate,
-            toggleModal,
+            toggleModal,            
         }),
         [
             nowPlayingMovies,
@@ -142,6 +158,10 @@ export const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ child
             popularMoviesError,
             topRatedMoviesError,
             upComingMoviesError,
+
+            specificMovie,
+            specificMovieStatus,
+            specificMovieError,
             
             moviesPage,
             setMoviesPage,
@@ -149,7 +169,7 @@ export const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ child
             setSelectedMovieId,
             selectedMovieRate,
             setSelectedMovieRate,
-            toggleModal,
+            toggleModal,            
         ]
     );
 

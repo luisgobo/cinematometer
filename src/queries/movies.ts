@@ -31,20 +31,20 @@ export const getUpcomingMovies = async (page: number) => {
     return data?.results;
 };
 
+export const getSpecificMovie = async (movieId: number) => {
+    
+    if(movieId> 0){
+        const { data } = await axios.get(
+            `${process.env.REACT_APP_MOVIES_API_ENDPOINT}/movie/${movieId}?api_key=${process.env.REACT_APP_MOVIES_API_KEY}&language=en-US`
+        );    
+        return data;
+    }
+    return undefined;
+};
+
 export const getGenres = async (page: number) => {
     const { data } = await axios.get(
         `${process.env.REACT_APP_MOVIES_API_ENDPOINT}/genre/movie/list?api_key=${process.env.REACT_APP_MOVIES_API_KEY}&language=en-US`
     );
     return data?.results;
-};
-
-export const combined = async (page: number) => {
-
-    // Make first two requests
-    const [movies, genres] = await Promise.all([
-        axios.get(`${process.env.REACT_APP_MOVIES_API_ENDPOINT}/movie/now_playing?api_key=${process.env.REACT_APP_MOVIES_API_KEY}&language=en-US&page=${page}`),
-        axios.get(`${process.env.REACT_APP_MOVIES_API_ENDPOINT}/genre/movie/list?api_key=${process.env.REACT_APP_MOVIES_API_KEY}&language=en-US`)
-    ]);
-
-    return [movies.data, genres.data];      
 };

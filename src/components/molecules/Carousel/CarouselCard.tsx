@@ -1,8 +1,6 @@
 import { Movie } from "../../../models/movie"
-import { Image } from "semantic-ui-react";
 import '../../../styles/carousel-card.scss';
 import { useMovies } from "../../../context/use-movies";
-import { StarEvaluation } from "../../atoms/StarEvaluation";
 
 export interface CarouselCardProps {
     movie: Movie;
@@ -26,9 +24,9 @@ export const CarouselCard: React.FC<CarouselCardProps> = ({
 
     return (
         <>                    
-            <div className="card" key={movie?.id}>
-                <Image
-                    draggable={false}
+            <div className="card" key={movie?.id}>            
+                <img
+                    alt={movie?.title}
                     className="image-size"
                     src={`https://image.tmdb.org/t/p/original/${movie?.poster_path}`}
                 />

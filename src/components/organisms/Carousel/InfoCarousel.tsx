@@ -32,7 +32,8 @@ export const InfoCarousel: React.FC<InfoCarouselProps> = ({
                                 </Section>
                             </Fragment>
                         </div>
-                        : null}
+                        : null
+                    }
                 </div>
             </div>
         </>
