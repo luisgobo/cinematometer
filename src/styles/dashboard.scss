@@ -1,9 +1,4 @@
-$light: #f1f1f1;
-$gray: #c4ccde;
-$hoverGray: #818181;
-$black: #111111;
-$baseColor: #515151;
-$secondaryColor: #2b2a2a;
+@import './color-palette.scss';
 
 
 $headerHeight: 60px;
@@ -29,14 +24,14 @@ $sideBarwidth: 14rem;
 }
 
 .app-tittle {
-    background-color: $baseColor;
+    background-color: $base-color;
     width: 20%;
     height: 100%;
     float: left;
 }
 
 .search-criteria {
-    background-color: $baseColor;
+    background-color: $base-color;
     width: 60%;
     overflow: auto;
 }
@@ -44,7 +39,7 @@ $sideBarwidth: 14rem;
 .user-info {
     position: relative;
     padding-top: 20px;
-    background-color: $baseColor;
+    background-color: $base-color;
     margin-left: auto; 
     margin-right: 0px;
     width: 20%;
@@ -91,7 +86,7 @@ $sideBarwidth: 14rem;
 }
 
 .dashboard-content {
-    background-color: $secondaryColor;
+    background-color: $secondary-color;
     width: calc(100vw - ($sideBarwidth + 1px));
     height: calc(100vh - ($headerHeight + 1px));
 }

@@ -1,7 +1,10 @@
 import { useMovies } from "../../../context/use-movies";
 import { StarEvaluation } from "../../atoms/StarEvaluation";
 import "../../../styles/movie-info.scss"
+import "../../../styles/user-opinion.scss"
 import React from "react";
+import { UserOpinionForm } from "../UserInteraction/UserOpinionForm";
+import { useFierbase } from "../../../context/use-firebase";
 
 export const MovieInfo = () => {
 
@@ -15,6 +18,8 @@ export const MovieInfo = () => {
         specificMovieStatus,
 
     } = useMovies();
+
+    const { appUser } = useFierbase();
 
 
     const [roundedRate, setRoundedRate] = React.useState(0);
@@ -78,11 +83,18 @@ export const MovieInfo = () => {
                                 </div>
                             </div>
                         </div>
+                        
+                        <div>
+                            <UserOpinionForm 
+                                userId= {
+                                    appUser?.authenticationId === undefined ? "" : appUser.authenticationId } 
+                                    movieId={movie?.id}
+                            />
+                        </div>
                     </div>
                     : null
                 }
-            </div>            
-            <p>Rate and Comments</p>
+            </div>
 
         </>
     );

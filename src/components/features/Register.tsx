@@ -66,7 +66,7 @@ export const Register = () => {
                         isValid,
                         isValidating
                     }) => (
-                        <form onSubmit={handleSubmit}>
+                        <form className="registry-form" onSubmit={handleSubmit}>
                             <h1>Register</h1>
                             <TextField
                                 error={touched.email && !!errors.email}

@@ -11,6 +11,7 @@ import {
 } from 'firebase/auth';
 import { useNavigate } from "react-router-dom";
 import { AppUser } from '../models/AppUser';
+import { MovieRate } from '../models/MovieRate';
 
 
 export interface FirebaseContextProps {
@@ -27,6 +28,9 @@ export interface FirebaseContextProps {
         password: string,
         name: string
     ) => Promise<UserCredential | undefined>;
+
+    insertMovieRate: any,
+    getMovieRatesByMovieId: any,
 }
 
 const firebaseCredentials: FirebaseOptions = {
@@ -45,6 +49,8 @@ const FirebaseContext = createContext<FirebaseContextProps>({
     displayLoading: true,
     login: () => Promise.resolve(undefined),
     securityRegister: () => Promise.resolve(undefined),
+    insertMovieRate: {},
+    getMovieRatesByMovieId: {},
 });
 
 export const FirebaseProvider = ({ children }: any) => {
@@ -82,7 +88,8 @@ export const FirebaseProvider = ({ children }: any) => {
                     const result: AppUser = {
                         authenticationId: doc.data().authenticationId,
                         name: doc.data().name,
-                        email: doc.data().email
+                        email: doc.data().email,
+                        created: doc.data().create,
                     };
                     setAppUser(result);
                 });
@@ -113,20 +120,32 @@ export const FirebaseProvider = ({ children }: any) => {
 
         try {
             if (db) {
-                await addDoc(collection(db, 'users'), {
+
+                const user: AppUser = {
                     authenticationId: id,
-                    email: email,
                     name: name,
+                    email: email ? email : "email@notfound.com",
                     created: Timestamp.now()
-                })
-                    .then((result) => {
-                        const user: AppUser = {
-                            authenticationId: result.id,
-                            name: name,
-                            email: email ? email : "email@notfound.com"
-                        }
-                        setAppUser(user);
-                    });
+                }
+                await addDoc(collection(db, 'users'), user)
+                .then((result) => {                    
+                    setAppUser({...user, authenticationId: result.id });
+                });
+
+                // await addDoc(collection(db, 'users'), {
+                //     authenticationId: id,
+                //     email: email,
+                //     name: name,
+                //     created: Timestamp.now()
+                // })
+                // .then((result) => {
+                //     const user: AppUser = {
+                //         authenticationId: result.id,
+                //         name: name,
+                //         email: email ? email : "email@notfound.com",                            
+                //     }
+                //     setAppUser(user);
+                // });
             }
 
         } catch (error) {
@@ -135,6 +154,143 @@ export const FirebaseProvider = ({ children }: any) => {
 
 
     };
+
+    /**********************/
+    //Movies Registry
+    const insertMovieRate = useCallback( async (movieRateId: string, userId: string , movieId: number, comments: string , movieRate: number) => {
+
+        try {
+            if (db) {
+
+                const movieRateReg: MovieRate = {
+                    movieRateId: movieRateId,
+                    userId: userId,
+                    movieId: movieId,
+                    comments: comments,
+                    movieRateValue: movieRate,
+                    created: Timestamp.now()
+                }
+
+                await addDoc(collection(db, 'movieRate'), {
+                    userId: userId,
+                    movieId: movieId,
+                    commnets: comments,
+                    movieRate: movieRate,
+                    created: Timestamp.now()
+                })
+                    .then((result) => {
+
+                        const movieRated= {...movieRateReg, movieRateId: result.id }                        
+                        // setAppUser(user);
+                    });
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+
+
+    },[]);
+
+    const getMovieRatesByMovieId = useCallback( async (movieId: number) => {
+        try {
+
+            //Get app user
+
+            const movieRates: MovieRate[]= [];
+            if (db) {
+                const queryResult = query(collection(db, "users"), where("movieId", "==", movieId));
+                const querySnapshot = await getDocs(queryResult);
+                if(querySnapshot.docs.length > 0 ){
+                    querySnapshot.forEach((doc) => {
+                        const result: MovieRate = {
+                            movieRateId: doc.data().movieRateId,
+                            userId: doc.data().userId,
+                            movieId: doc.data().movieId,
+                            comments: doc.data().comments,
+                            movieRateValue: doc.data().movieRate,
+                            created: doc.data().created,
+                        };
+                        movieRates.push(result);
+                    });
+                }
+            }
+
+            return movieRates;
+
+        } catch (error) {
+            console.log(error);
+        }
+    },[]);
+
+    /**********************/
+    //Favorite movies by user
+    const insertFavoriteMoviebyUser = useCallback( async (movieRateId: string, userId: string , movieId: number, comments: string , movieRate: number) => {
+
+        try {
+            if (db) {
+
+                const movieRateReg: MovieRate = {
+                    movieRateId: movieRateId,
+                    userId: userId,
+                    movieId: movieId,
+                    comments: comments,
+                    movieRateValue: movieRate,
+                    created: Timestamp.now()
+                }
+
+                await addDoc(collection(db, 'movieRate'), {
+                    userId: userId,
+                    movieId: movieId,
+                    commnets: comments,
+                    movieRate: movieRate,
+                    created: Timestamp.now()
+                })
+                    .then((result) => {
+
+                        const movieRated= {...movieRateReg, movieRateId: result.id }                        
+                        // setAppUser(user);
+                    });
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+
+
+    },[]);
+
+    const getFavoriteMoviesbyUser = useCallback( async (movieId: number) => {
+        try {
+
+            //Get app user
+
+            const movieRates: MovieRate[]= [];
+            if (db) {
+                const queryResult = query(collection(db, "users"), where("movieId", "==", movieId));
+                const querySnapshot = await getDocs(queryResult);
+                if(querySnapshot.docs.length > 0 ){
+                    querySnapshot.forEach((doc) => {
+                        const result: MovieRate = {
+                            movieRateId: doc.data().movieRateId,
+                            userId: doc.data().userId,
+                            movieId: doc.data().movieId,
+                            comments: doc.data().comments,
+                            movieRateValue: doc.data().movieRate,
+                            created: doc.data().created,
+                        };
+                        movieRates.push(result);
+                    });
+                }
+            }
+
+            return movieRates;
+
+        } catch (error) {
+            console.log(error);
+        }
+    },[]);
+    /**********************/
 
     const authStateChanged = React.useCallback(
         async (user: User | null) => {
@@ -178,6 +334,9 @@ export const FirebaseProvider = ({ children }: any) => {
             displayLoading,
             login,
             securityRegister,
+
+            insertMovieRate,
+            getMovieRatesByMovieId,
         }),
         [
             app,
@@ -186,6 +345,9 @@ export const FirebaseProvider = ({ children }: any) => {
             displayLoading,
             login,
             securityRegister,
+
+            insertMovieRate,
+            getMovieRatesByMovieId,
         ]
     );
 

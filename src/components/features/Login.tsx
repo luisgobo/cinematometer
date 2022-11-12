@@ -11,7 +11,7 @@ import AuthorizedPage from "../layouts/AuthorizedPage";
 
 //const MIN_PASSWORD_CHARACTERS = 8;
 
-interface loginFormValues {
+interface LoginFormValues {
     email: string,
     password: string
 }
@@ -32,7 +32,7 @@ export const Login = () => {
 
     const { login } = useFierbase();
 
-    const handleFormSubmit = async (values: loginFormValues) => {
+    const handleFormSubmit = async (values: LoginFormValues) => {
         try {
             await login(values.email, values.password);            
 
@@ -48,7 +48,7 @@ export const Login = () => {
     return (
         <AuthorizedPage>
             <main className="main">
-                <Formik<loginFormValues>
+                <Formik<LoginFormValues>
                     initialValues={{
                         email: '',
                         password: ''
@@ -70,7 +70,7 @@ export const Login = () => {
                         isValid,
                         isValidating
                     }) => (
-                        <form onSubmit={handleSubmit}>
+                        <form className="registry-form" onSubmit={handleSubmit}>
                             <h1>Login</h1>
                             <TextField
                                 error={touched.email && !!errors.email}
