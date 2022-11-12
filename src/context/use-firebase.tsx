@@ -189,39 +189,47 @@ export const FirebaseProvider = ({ children }: any) => {
             console.log(error);
         }
 
+    },[db]);
 
-    },[]);
-
-    const getMovieRatesByMovieId = useCallback( async (movieId: number) => {
+    const getMovieRatesByMovieId = React.useCallback( async (movieId: number) => {
         try {
 
-            //Get app user
+            console.log("getMovieRatesByMovieId...")
+            console.log("movieId:", movieId);
 
-            const movieRates: MovieRate[]= [];
+            
             if (db) {
-                const queryResult = query(collection(db, "users"), where("movieId", "==", movieId));
+                const movieRates: MovieRate[]= [];
+                const queryResult = query(collection(db, "movieRate"), where("movieId", "==", movieId));
                 const querySnapshot = await getDocs(queryResult);
+                
                 if(querySnapshot.docs.length > 0 ){
+                    console.log("Exist docs...")
                     querySnapshot.forEach((doc) => {
                         const result: MovieRate = {
                             movieRateId: doc.data().movieRateId,
                             userId: doc.data().userId,
                             movieId: doc.data().movieId,
                             comments: doc.data().comments,
-                            movieRateValue: doc.data().movieRate,
+                            movieRateValue: doc.data().movieRateValue,
                             created: doc.data().created,
                         };
                         movieRates.push(result);
                     });
+                    console.log("movieRates Content after foreach:", movieRates);
+                    return movieRates;
                 }
+                else
+                    console.log("no data found");
+                    
             }
 
-            return movieRates;
+            return undefined;
 
         } catch (error) {
             console.log(error);
         }
-    },[]);
+    },[db]);
 
     /**********************/
     //Favorite movies by user

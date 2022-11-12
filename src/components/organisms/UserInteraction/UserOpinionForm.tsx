@@ -51,7 +51,6 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
             movieRateValue: 0,
             created: Timestamp.now(),
 
-
           }}
           validationSchema={MovieRateSchema}
           onSubmit={handleFormSubmit}
