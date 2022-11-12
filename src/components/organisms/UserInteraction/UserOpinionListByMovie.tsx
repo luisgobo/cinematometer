@@ -52,7 +52,7 @@ export const UserOpinionListByMovie: React.FC<UserOpinionListByMovieProps> = ({
           <div className="user-opinion-list-content div-vertical-scroll">
             <ul>
               {displayRates && movieRates?.map((currentMovieRate: MovieRate) => (
-                <li key={currentMovieRate.userId}>
+                <li key={currentMovieRate.movieRateId}>
                   <div>
                     <div>Username: {currentMovieRate.userId}</div>
                     <div>

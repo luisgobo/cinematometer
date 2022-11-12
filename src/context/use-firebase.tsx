@@ -1,6 +1,7 @@
 import React, { useContext, createContext, useCallback } from 'react';
 import { initializeApp, FirebaseApp, FirebaseOptions } from 'firebase/app'
 import { Firestore, getFirestore, addDoc, collection, Timestamp, getDocs, query, where } from 'firebase/firestore'
+import "../styles/dashboard.scss";
 
 import {
     getAuth,
@@ -157,7 +158,7 @@ export const FirebaseProvider = ({ children }: any) => {
 
     /**********************/
     //Movies Registry
-    const insertMovieRate = useCallback( async (movieRateId: string, userId: string , movieId: number, comments: string , movieRate: number) => {
+    const insertMovieRate = useCallback( async (movieRateId: string, userId: string , movieId: number, comments: string , movieRateValue: number) => {
 
         try {
             if (db) {
@@ -167,15 +168,15 @@ export const FirebaseProvider = ({ children }: any) => {
                     userId: userId,
                     movieId: movieId,
                     comments: comments,
-                    movieRateValue: movieRate,
+                    movieRateValue: movieRateValue,
                     created: Timestamp.now()
                 }
 
                 await addDoc(collection(db, 'movieRate'), {
                     userId: userId,
                     movieId: movieId,
-                    commnets: comments,
-                    movieRate: movieRate,
+                    comments: comments,
+                    movieRateValue: movieRateValue,
                     created: Timestamp.now()
                 })
                     .then((result) => {
@@ -206,8 +207,10 @@ export const FirebaseProvider = ({ children }: any) => {
                 if(querySnapshot.docs.length > 0 ){
                     console.log("Exist docs...")
                     querySnapshot.forEach((doc) => {
+                        console.log("doc.data:", doc.data());
+                        
                         const result: MovieRate = {
-                            movieRateId: doc.data().movieRateId,
+                            movieRateId: doc.id,
                             userId: doc.data().userId,
                             movieId: doc.data().movieId,
                             comments: doc.data().comments,
