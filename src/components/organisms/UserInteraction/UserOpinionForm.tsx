@@ -7,9 +7,6 @@ import { MovieRate } from "../../../models/MovieRate";
 import AuthorizedPage from "../../layouts/AuthorizedPage";
 import * as Yup from 'yup'
 import { TextField } from "@mui/material";
-import { MinimalTextbox } from "../../atoms/MinimalTextbox";
-import { width } from "@mui/system";
-
 
 const MovieRateSchema = Yup.object().shape({
   comments: Yup.string().required(),
@@ -31,10 +28,8 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
   const { insertMovieRate } = useFierbase();
 
   const handleFormSubmit = async (values: MovieRate) => {
-    try {
-      //movieRateId: string, userId: string , movieId: number, comments: string , movieRate: number  
+    try {      
       await insertMovieRate(values.movieRateId, values.userId, values.movieId, values.comments, values.movieRateValue);
-
     } catch (error) {
       console.log(error);
     }
@@ -67,7 +62,7 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
           {({
             values,
             errors,
-            touched,            
+            touched,
             handleChange,
             handleBlur,
             handleSubmit,
@@ -77,11 +72,8 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
           }) => (
             <form className="user-opinion-form" onSubmit={handleSubmit}>
 
-              <p className="user-opinion-p">
-                <h3>Let us know about this movie</h3>
-              </p>
-              
-              
+              <h3 className="user-opinion-p">Let us know about this movie</h3>
+
               <TextField
                 error={touched.comments && !!errors.comments}
                 helperText={touched.comments && errors.comments}
@@ -105,8 +97,8 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
                 value={values.movieRateValue}
                 placeholder='Type a value'
                 onChange={handleChange("movieRateValue")}
-                onBlur={handleBlur("movieRateValue")}                 
-                className= "user-opinion-textbox2"/>
+                onBlur={handleBlur("movieRateValue")}
+                className="user-opinion-textbox2" />
 
 
               {/* <MinimalTextbox 

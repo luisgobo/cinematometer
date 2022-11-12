@@ -5,6 +5,7 @@ import "../../../styles/user-opinion.scss"
 import React from "react";
 import { UserOpinionForm } from "../UserInteraction/UserOpinionForm";
 import { useFierbase } from "../../../context/use-firebase";
+import { UserOpinionListByMovie } from "../UserInteraction/UserOpinionListByMovie";
 
 export const MovieInfo = () => {
 
@@ -16,14 +17,12 @@ export const MovieInfo = () => {
         selectedMovieRate,
         specificMovie: movie,
         specificMovieStatus,
-
     } = useMovies();
 
     const { appUser } = useFierbase();
 
 
-    const [roundedRate, setRoundedRate] = React.useState(0);
-    console.log("specificMovie: ", movie);
+    const [roundedRate, setRoundedRate] = React.useState(0);    
 
     React.useEffect(() => {
 
@@ -68,7 +67,7 @@ export const MovieInfo = () => {
                                         <ul className="tag-ul">
                                             {movie.genres.map((genre) => {
                                                 return (
-                                                    <li className="tag-li">
+                                                    <li className="tag-li" key={genre.id}>
                                                         <span className="tag" key={genre.id}>{genre.name}</span>
                                                     </li>
                                                 )
@@ -90,6 +89,7 @@ export const MovieInfo = () => {
                                     appUser?.authenticationId === undefined ? "" : appUser.authenticationId } 
                                     movieId={movie?.id}
                             />
+                            <UserOpinionListByMovie movieId={movie?.id}/>
                         </div>
                     </div>
                     : null
