@@ -29,6 +29,8 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
 
   const handleFormSubmit = async (values: MovieRate) => {
     try {      
+      console.log("Handle Submit userId:", userId);
+      
       await insertMovieRate(values.movieRateId, values.userId, values.movieId, values.comments, values.movieRateValue);
     } catch (error) {
       console.log(error);
