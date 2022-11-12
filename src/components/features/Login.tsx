@@ -7,6 +7,7 @@ import { TextField, Link } from '@mui/material';
 import styled from '@emotion/styled'
 import { LoadingButton } from "@mui/lab";
 import AuthorizedPage from "../layouts/AuthorizedPage";
+import { useNavigate } from "react-router-dom";
 
 
 //const MIN_PASSWORD_CHARACTERS = 8;
@@ -31,10 +32,17 @@ const LoginSchema = Yup.object().shape({
 export const Login = () => {
 
     const { login } = useFierbase();
+    const navigate = useNavigate();
 
     const handleFormSubmit = async (values: LoginFormValues) => {
         try {
-            await login(values.email, values.password);            
+            const user = await login(values.email, values.password);                        
+            console.log("user result:", user);
+            if(user){
+                navigate("/");  
+            }
+                
+            
 
         } catch (error) {            
             console.log(error);

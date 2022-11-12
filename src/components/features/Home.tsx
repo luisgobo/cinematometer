@@ -5,7 +5,7 @@ import { InfoCarousel } from "../organisms/Carousel/InfoCarousel";
 import { Movie } from "../../models/movie";
 import { DashboardLayout } from "../layouts/dashboard/DashboardLayout";
 import "../../styles/popup-modal.scss"
-import { MovieInfo } from "../organisms/Movie/MovieInfo";
+import { MovieInfoModal } from "../organisms/Movie/MovieInfo";
 
 export const Home = () => {
 
@@ -30,14 +30,14 @@ export const Home = () => {
   return (
     <ProtectedPage>
 
-      <div className="modal-background" onClick={toggleModal}/>
-      <div className="modal">
-        <span className="close-modal" onClick={toggleModal}>X</span>        
-        <MovieInfo/>
-      </div>
       <DashboardLayout>
         {
           <div>
+            <div className="modal-background" onClick={toggleModal}/>
+            <div className="modal">
+              <span className="close-modal" onClick={toggleModal}>X</span>        
+              <MovieInfoModal/>
+            </div>
             <InfoCarousel
               title={"Now in theatres"}
               movieList={processMovieList(nowPlayingMovies)}

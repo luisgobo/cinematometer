@@ -10,7 +10,8 @@ const AuthorizedPage: React.FC<PropsWithChildren> = ({children}) => {
     React.useEffect(() => {
         if (firebaseUser){
             console.log('firebase user found in AuthorizedPage')
-            navigate("/");      
+            //Commented because of conflict witn nav bar
+            //navigate("/");
         }
     }, [firebaseUser]);    
 

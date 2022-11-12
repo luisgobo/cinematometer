@@ -7,7 +7,7 @@ import { UserOpinionForm } from "../UserInteraction/UserOpinionForm";
 import { useFierbase } from "../../../context/use-firebase";
 import { UserOpinionListByMovie } from "../UserInteraction/UserOpinionListByMovie";
 
-export const MovieInfo = () => {
+export const MovieInfoModal = () => {
 
     const handleSelectedRate = ((ratedValue: number) => {
         console.log("ratedValue", ratedValue);

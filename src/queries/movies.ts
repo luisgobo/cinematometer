@@ -1,7 +1,4 @@
-import { map } from "@firebase/util";
 import axios from "axios";
-import { Genre } from "../models/Genre";
-import { Movie } from "../models/movie";
 
 export const getNowPlayingMovies = async (page: number) => {
     const { data } = await axios.get(

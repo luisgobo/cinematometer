@@ -62,7 +62,6 @@ export const UserOpinionListByMovie: React.FC<UserOpinionListByMovieProps> = ({
                     </div>
                     <button type="button">Allow Edit</button>
                   </div>
-
                 </li>
               ))}
             </ul>

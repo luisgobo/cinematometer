@@ -1,11 +1,12 @@
 import React, { useContext, createContext, useCallback } from 'react';
 import { initializeApp, FirebaseApp, FirebaseOptions } from 'firebase/app'
-import { Firestore, getFirestore, addDoc, collection, Timestamp, getDocs, query, where } from 'firebase/firestore'
+import { Firestore, getFirestore, addDoc, collection, Timestamp, getDocs, query, where, clearIndexedDbPersistence } from 'firebase/firestore'
 import "../styles/dashboard.scss";
 
 import {
     getAuth,
     signInWithEmailAndPassword,
+    signOut,
     UserCredential,
     createUserWithEmailAndPassword,
     User,
@@ -13,7 +14,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import { AppUser } from '../models/AppUser';
 import { MovieRate } from '../models/MovieRate';
-import { timeStamp } from 'console';
 
 
 export interface FirebaseContextProps {
@@ -25,6 +25,7 @@ export interface FirebaseContextProps {
         email: string,
         password: string
     ) => Promise<UserCredential | undefined>;
+    logout: () => Promise<void | undefined>;
     securityRegister: (
         email: string,
         password: string,
@@ -50,6 +51,7 @@ const FirebaseContext = createContext<FirebaseContextProps>({
     appUser: undefined,
     displayLoading: true,
     login: () => Promise.resolve(undefined),
+    logout: () => Promise.resolve(undefined),
     securityRegister: () => Promise.resolve(undefined),
     insertMovieRate: {},
     getMovieRatesByMovieId: {},
@@ -78,10 +80,32 @@ export const FirebaseProvider = ({ children }: any) => {
         }
     }, [])
 
+    const logout = useCallback(async () => {
+        const auth = getAuth();
+        signOut(auth);
+        if (db) {
+            
+            clearIndexedDbPersistence(db).catch(error => {
+                console.error('Could not enable persistence:', error.code);
+            })
+        }
+        //setFirebaseUser(undefined);
+
+        const cookies = document.cookie.split(";");
+        console.log("cookies: ", cookies);
+
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i];
+            const eqPos = cookie.indexOf("=");
+            const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
+
+        navigate("/login");
+    }, [navigate])
+
     const getUserDataByEmail = async (email: string) => {
         try {
-
-            //Get app user
 
             if (db) {
                 const queryResult = query(collection(db, "users"), where("email", "==", email));
@@ -101,42 +125,39 @@ export const FirebaseProvider = ({ children }: any) => {
         }
     };
 
-    const userRegister =  useCallback(async (id: string, email: (string | null), name: string) => {
+    const userRegister = useCallback(async (id: string, email: (string | null), name: string) => {
 
         try {
             if (db) {
 
-                // const user: AppUser = {
-                //     authenticationId: id,
-                //     name: name,
-                //     email: email ? email : "email@notfound.com",
-                //     created: Timestamp.now()
-                // }
-                // await addDoc(collection(db, 'users'), user)
-                // .then((result) => {                    
-                //     setAppUser({...user, authenticationId: result.id });
-                // });
-
                 console.log("UserRegister-id:", id);
-                
 
-                if (db) {
-                    await addDoc(collection(db, 'users'), {
-                        authenticationId: id,
-                        email: email,
-                        name: name,
-                        created: Timestamp.now()
-                    })
-                        .then((result) => {
-                            const user: AppUser = {
-                                authenticationId: result.id,
-                                name: name,
-                                email: email ? email : "email@notfound.com",
-                                created: Timestamp.now()
-                            }
-                            setAppUser(user);
-                        });
+                const user: AppUser = {
+                    authenticationId: id,
+                    name: name,
+                    email: email ? email : "email@notfound.com",
+                    created: Timestamp.now()
                 }
+                await addDoc(collection(db, 'users'), user)
+                    .then((result) => {
+                        setAppUser({ ...user, authenticationId: result.id });
+                    });
+
+                // await addDoc(collection(db, 'users'), {
+                //     authenticationId: id,
+                //     email: email,
+                //     name: name,
+                //     created: Timestamp.now()
+                // })
+                // .then((result) => {
+                //     const user: AppUser = {
+                //         authenticationId: result.id,
+                //         name: name,
+                //         email: email ? email : "email@notfound.com",
+                //         created: Timestamp.now()
+                //     }
+                //     setAppUser(user);
+                // });
             }
 
         } catch (error) {
@@ -163,7 +184,7 @@ export const FirebaseProvider = ({ children }: any) => {
         }
     }, [userRegister])
 
-    
+
 
     /**********************/
     //Movies Registry
@@ -216,7 +237,7 @@ export const FirebaseProvider = ({ children }: any) => {
                 if (querySnapshot.docs.length > 0) {
                     console.log("Exist docs...")
                     querySnapshot.forEach((doc) => {
-                        
+
                         // console.log("doc:", doc.data());                        
                         // console.log("doc.id:", doc.id);
 
@@ -247,7 +268,7 @@ export const FirebaseProvider = ({ children }: any) => {
 
     /**********************/
     //Favorite movies by user
-    const insertFavoriteMoviebyUser = useCallback(async (movieRateId: string, userId: string, movieId: number, comments: string, movieRate: number) => {
+    const insertFavoriteMovieByUser = useCallback(async (movieRateId: string, userId: string, movieId: number, comments: string, movieRate: number) => {
 
         try {
             if (db) {
@@ -317,15 +338,19 @@ export const FirebaseProvider = ({ children }: any) => {
     const authStateChanged = React.useCallback(
         async (user: User | null) => {
 
+            console.log("authStateChanged triggered");
+            console.log("user: ", user);
+
+
             if (!user) {
                 setDisplayLoading(false);
                 return;
             }
 
             setFirebaseUser(user);
-
             setDisplayLoading(false);
-            navigate("/");
+            //Commented because of conflict witn nav bar
+            //navigate("/");
 
         }
         , [navigate]);
@@ -355,6 +380,7 @@ export const FirebaseProvider = ({ children }: any) => {
             appUser,
             displayLoading,
             login,
+            logout,
             securityRegister,
 
             insertMovieRate,
@@ -366,6 +392,7 @@ export const FirebaseProvider = ({ children }: any) => {
             appUser,
             displayLoading,
             login,
+            logout,
             securityRegister,
 
             insertMovieRate,
