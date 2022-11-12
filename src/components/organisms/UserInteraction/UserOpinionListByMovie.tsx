@@ -49,7 +49,7 @@ export const UserOpinionListByMovie: React.FC<UserOpinionListByMovieProps> = ({
     <>
       <AuthorizedPage>
         <main>
-          <div className="user-opinion-list-content div-vertical-scroll">
+          <div className="user-opinion-list-content">
             <ul>
               {displayRates && movieRates?.map((currentMovieRate: MovieRate) => (
                 <li key={currentMovieRate.movieRateId}>

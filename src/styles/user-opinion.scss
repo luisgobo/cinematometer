@@ -31,8 +31,12 @@
 }
 
 .user-opinion-list-content{
-    //background-color: antiquewhite;
     position: absolute;
     padding-bottom: 40px;
     margin-top: 140px;
+    height: 120px;
+    width: 780px;
+    flex: 1 1;
+    overflow-y: scroll !important;
+    overflow: auto;
 }

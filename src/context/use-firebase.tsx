@@ -101,24 +101,7 @@ export const FirebaseProvider = ({ children }: any) => {
         }
     };
 
-    const securityRegister = useCallback(async (email: string, password: string, name: string) => {
-        try {
-            //Create SecurityCredentials
-            const auth = getAuth();
-            const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
-            setFirebaseUser(userCredentials.user);
-
-            //create App User
-            if (userCredentials) {
-                userRegister(userCredentials.user.uid, email, name);
-            }
-            return userCredentials;
-        } catch (error) {
-            console.log(error);
-        }
-    }, [])
-
-    const userRegister = async (id: string, email: (string | null), name: string) => {
+    const userRegister =  useCallback(async (id: string, email: (string | null), name: string) => {
 
         try {
             if (db) {
@@ -161,7 +144,26 @@ export const FirebaseProvider = ({ children }: any) => {
         }
 
 
-    };
+    }, [db]);
+
+    const securityRegister = useCallback(async (email: string, password: string, name: string) => {
+        try {
+            //Create SecurityCredentials
+            const auth = getAuth();
+            const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+            setFirebaseUser(userCredentials.user);
+
+            //create App User
+            if (userCredentials) {
+                userRegister(userCredentials.user.uid, email, name);
+            }
+            return userCredentials;
+        } catch (error) {
+            console.log(error);
+        }
+    }, [userRegister])
+
+    
 
     /**********************/
     //Movies Registry
