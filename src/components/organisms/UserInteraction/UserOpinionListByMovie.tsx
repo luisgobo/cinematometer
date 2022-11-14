@@ -16,32 +16,25 @@ export const UserOpinionListByMovie: React.FC<UserOpinionListByMovieProps> = ({
   const [movieRates, setMovieRates] = React.useState<MovieRate[]>([]);
   const [displayRates, setDisplayRates] = React.useState(false);
 
-  React.useEffect(() => {
-    console.log("charge comments")
+  React.useEffect(() => {    
     const rates: MovieRate[] = []
-    getMovieRatesByMovieId(movieId).then(async (movieRates: (MovieRate[] | undefined)) => {
-      console.log("movieRateobtained from getMoviesRatesByMovieId: ", movieRates);
-      movieRates?.forEach((movieRate) => {
-        console.log("movieRateItem:", movieRate);
+    getMovieRatesByMovieId(movieId).then(async (movieRates: (MovieRate[] | undefined)) => {      
+      movieRates?.forEach((movieRate) => {      
         rates.push(movieRate);
-      });
-      console.log("rates: ", rates)
+      });      
       setMovieRates(rates);
     })
 
   }, [])
 
-  React.useEffect(() => {
-    console.log("movieRates UOLByMov:", movieRates)
+  React.useEffect(() => {    
     if (movieRates.length > 0)
       setDisplayRates(true);
 
   }, [movieRates])
 
 
-  React.useEffect(() => {
-
-    console.log("displayRates status:", displayRates);
+  React.useEffect(() => {    
 
   }, [displayRates])
 

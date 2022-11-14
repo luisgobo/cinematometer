@@ -36,8 +36,7 @@ export const Login = () => {
 
     const handleFormSubmit = async (values: LoginFormValues) => {
         try {
-            const user = await login(values.email, values.password);                        
-            console.log("user result:", user);
+            const user = await login(values.email, values.password);            
             if(user){
                 navigate("/");  
             }

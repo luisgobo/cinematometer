@@ -91,15 +91,14 @@ export const FirebaseProvider = ({ children }: any) => {
         }
         //setFirebaseUser(undefined);
 
-        const cookies = document.cookie.split(";");
-        console.log("cookies: ", cookies);
+        // const cookies = document.cookie.split(";");
 
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i];
-            const eqPos = cookie.indexOf("=");
-            const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-        }
+        // for (let i = 0; i < cookies.length; i++) {
+        //     const cookie = cookies[i];
+        //     const eqPos = cookie.indexOf("=");
+        //     const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        //     document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        // }
 
         navigate("/login");
     }, [navigate])
@@ -129,9 +128,6 @@ export const FirebaseProvider = ({ children }: any) => {
 
         try {
             if (db) {
-
-                console.log("UserRegister-id:", id);
-
                 const user: AppUser = {
                     authenticationId: id,
                     name: name,
@@ -224,23 +220,13 @@ export const FirebaseProvider = ({ children }: any) => {
 
     const getMovieRatesByMovieId = React.useCallback(async (movieId: number) => {
         try {
-
-            console.log("getMovieRatesByMovieId...")
-            console.log("movieId:", movieId);
-
-
             if (db) {
                 const movieRates: MovieRate[] = [];
                 const queryResult = query(collection(db, "movieRate"), where("movieId", "==", movieId));
                 const querySnapshot = await getDocs(queryResult);
 
                 if (querySnapshot.docs.length > 0) {
-                    console.log("Exist docs...")
                     querySnapshot.forEach((doc) => {
-
-                        // console.log("doc:", doc.data());                        
-                        // console.log("doc.id:", doc.id);
-
                         const result: MovieRate = {
                             movieRateId: doc.id,
                             userId: doc.data().userId,
@@ -250,8 +236,7 @@ export const FirebaseProvider = ({ children }: any) => {
                             created: doc.data().created,
                         };
                         movieRates.push(result);
-                    });
-                    console.log("movieRates Content after foreach:", movieRates);
+                    });                    
                     return movieRates;
                 }
                 else
@@ -337,11 +322,6 @@ export const FirebaseProvider = ({ children }: any) => {
 
     const authStateChanged = React.useCallback(
         async (user: User | null) => {
-
-            console.log("authStateChanged triggered");
-            console.log("user: ", user);
-
-
             if (!user) {
                 setDisplayLoading(false);
                 return;
