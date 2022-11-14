@@ -25,12 +25,17 @@ export const CarouselCard: React.FC<CarouselCardProps> = ({
 
     return (
         <>                    
-            <div className="card" key={movie?.id}>            
-                <img
-                    alt={movie?.title}
-                    className="image-size"
-                    src={`${process.env.REACT_APP_IMAGES_ENDPOINT}/${movie?.poster_path}`}
-                />
+            <div className="card" key={movie?.id}>
+                <div className="favorite-card">
+                    <div className="star"></div>
+                </div>         
+                <div className="img-card">
+                    <img
+                        alt={movie?.title}
+                        className="image-size"
+                        src={`${process.env.REACT_APP_IMAGES_ENDPOINT}/${movie?.poster_path}`}
+                    />
+                </div>
                 <div className="container">
                     <h4  className="card-movie-title1"><b>{movie?.title}</b></h4>
                     <h5 className="card-movie-title2">{movie?.original_title} </h5>

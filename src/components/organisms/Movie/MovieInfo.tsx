@@ -52,7 +52,7 @@ export const MovieInfoModal = () => {
                         <div className="movie-card">
                                 <div className="favorite-selection">
                                     <StarCheck isReadOnly={false} isChecked={isFavorite} HandleFavoriteSelection={handleFavoriteSelection} />
-                                </div>
+                                </div>                                
                             <div className="movie-info-container">
                                 <a href={movie?.homepage}>
                                     <img
