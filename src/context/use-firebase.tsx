@@ -1,6 +1,20 @@
 import React, { useContext, createContext, useCallback } from 'react';
 import { initializeApp, FirebaseApp, FirebaseOptions } from 'firebase/app'
-import { Firestore, getFirestore, addDoc, collection, Timestamp, getDocs, query, where, clearIndexedDbPersistence } from 'firebase/firestore'
+import { 
+    addDoc, 
+    collection, 
+    clearIndexedDbPersistence, 
+    deleteDoc, 
+    DocumentData, 
+    Firestore, 
+    getFirestore, 
+    getDocs, 
+    query, 
+    QueryDocumentSnapshot,
+    Timestamp, 
+    where,
+    doc, 
+} from 'firebase/firestore'
 import "../styles/dashboard.scss";
 
 import {
@@ -14,7 +28,16 @@ import {
 import { useNavigate } from "react-router-dom";
 import { AppUser } from '../models/AppUser';
 import { MovieRate } from '../models/MovieRate';
+import { FavoriteMovie } from '../models/FavoriteMovie';
 
+const firebaseCredentials: FirebaseOptions = {
+    apiKey: process.env.REACT_APP_APIKEY,
+    authDomain: process.env.REACT_APP_AUTHDOMAIN,
+    projectId: process.env.REACT_APP_PROJECTID,
+    storageBucket: process.env.REACT_APP_STORAGEBUCKET,
+    messagingSenderId: process.env.REACT_APP_MESSAGGINGSENDERID,
+    appId: process.env.REACT_APP_APPID
+}
 
 export interface FirebaseContextProps {
     app: FirebaseApp | null;
@@ -31,18 +54,24 @@ export interface FirebaseContextProps {
         password: string,
         name: string
     ) => Promise<UserCredential | undefined>;
+    checkIfExistFavorite: (
+        userId: string | undefined,
+        movieId: number| undefined
+    ) => Promise< boolean | undefined>
 
     insertMovieRate: any,
+    insertFavoriteMovieByUser: (        
+        favoriteMovieId:string, 
+        userId: string, 
+        movieId: number
+    ) => Promise <void>,
+    deleteFavoriteMovieByUser: (
+        userId: string, 
+        movieId: number
+    ) => Promise <void>,
+    
     getMovieRatesByMovieId: any,
-}
-
-const firebaseCredentials: FirebaseOptions = {
-    apiKey: process.env.REACT_APP_APIKEY,
-    authDomain: process.env.REACT_APP_AUTHDOMAIN,
-    projectId: process.env.REACT_APP_PROJECTID,
-    storageBucket: process.env.REACT_APP_STORAGEBUCKET,
-    messagingSenderId: process.env.REACT_APP_MESSAGGINGSENDERID,
-    appId: process.env.REACT_APP_APPID
+    
 }
 
 const FirebaseContext = createContext<FirebaseContextProps>({
@@ -53,7 +82,11 @@ const FirebaseContext = createContext<FirebaseContextProps>({
     login: () => Promise.resolve(undefined),
     logout: () => Promise.resolve(undefined),
     securityRegister: () => Promise.resolve(undefined),
+    checkIfExistFavorite: () => Promise.resolve(undefined),
+    
     insertMovieRate: {},
+    deleteFavoriteMovieByUser:() => Promise.resolve(),
+    insertFavoriteMovieByUser: () => Promise.resolve(),
     getMovieRatesByMovieId: {},
 });
 
@@ -84,21 +117,11 @@ export const FirebaseProvider = ({ children }: any) => {
         const auth = getAuth();
         signOut(auth);
         if (db) {
-            
+
             clearIndexedDbPersistence(db).catch(error => {
                 console.error('Could not enable persistence:', error.code);
             })
         }
-        //setFirebaseUser(undefined);
-
-        // const cookies = document.cookie.split(";");
-
-        // for (let i = 0; i < cookies.length; i++) {
-        //     const cookie = cookies[i];
-        //     const eqPos = cookie.indexOf("=");
-        //     const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-        //     document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-        // }
 
         navigate("/login");
     }, [navigate])
@@ -207,7 +230,7 @@ export const FirebaseProvider = ({ children }: any) => {
                 })
                     .then((result) => {
 
-                        const movieRated = { ...movieRateReg, movieRateId: result.id }
+                        const movieRatedResult = { ...movieRateReg, movieRateId: result.id }
                         // setAppUser(user);
                     });
             }
@@ -236,7 +259,7 @@ export const FirebaseProvider = ({ children }: any) => {
                             created: doc.data().created,
                         };
                         movieRates.push(result);
-                    });                    
+                    });
                     return movieRates;
                 }
                 else
@@ -253,49 +276,74 @@ export const FirebaseProvider = ({ children }: any) => {
 
     /**********************/
     //Favorite movies by user
-    const insertFavoriteMovieByUser = useCallback(async (movieRateId: string, userId: string, movieId: number, comments: string, movieRate: number) => {
+    const insertFavoriteMovieByUser = useCallback(async (favoriteMovieId:string, userId: string, movieId: number) => {
+        console.log("insertFavoriteMovieByUser..");
+        
+        try {
+            if (db) {                
+                checkIfExistFavorite(userId, movieId).then(async (existField: boolean | undefined)=>{
+                    console.log("existField: ", existField);
+                    if(!existField){
+                        console.log("Insert field");
+                        const favoriteMovioeReg: FavoriteMovie = {
+                            favoriteMovieId: favoriteMovieId,
+                            userId: userId,
+                            movieId: movieId,
+                            created: Timestamp.now()
+                        }
+        
+                        await addDoc(collection(db, 'favoriteMoviesbyUser'), {
+                            userId: userId,
+                            movieId: movieId,
+                            created: Timestamp.now()
+                        })
+                        .then((result) => {
+                            console.log("Insert favorite result: ", result);                            
+                            const favoriteMovieResult = { ...favoriteMovioeReg, favoriteMovieId: result.id }
+                            // setAppUser(user);
+                        });
+                    }
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
+    }, [db]);
+
+    const deleteFavoriteMovieByUser = useCallback(async (userId: string, movieId: number) => {
 
         try {
             if (db) {
 
-                const movieRateReg: MovieRate = {
-                    movieRateId: movieRateId,
-                    userId: userId,
-                    movieId: movieId,
-                    comments: comments,
-                    movieRateValue: movieRate,
-                    created: Timestamp.now()
-                }
-
-                await addDoc(collection(db, 'movieRate'), {
-                    userId: userId,
-                    movieId: movieId,
-                    commnets: comments,
-                    movieRate: movieRate,
-                    created: Timestamp.now()
-                })
-                    .then((result) => {
-
-                        const movieRated = { ...movieRateReg, movieRateId: result.id }
-                        // setAppUser(user);
+                console.log("delete favorite");
+                
+                const queryResult = query(collection(db, "favoriteMoviesbyUser"), where("movieId", "==", movieId), where("userId", "==", userId));
+                const querySnapshot = await getDocs(queryResult);
+                console.log("querySnapshot.docs.length", querySnapshot.docs.length);
+                
+                querySnapshot.forEach((element)  => {
+                    const docRef = doc(db, "favoriteMoviesbyUser", element.id);
+                    return deleteDoc(docRef).then((result)=>{
+                        console.log("document deleted");                        
                     });
+                });                
             }
-
         } catch (error) {
             console.log(error);
         }
 
 
-    }, []);
+    }, [db]);
 
-    const getFavoriteMoviesbyUser = useCallback(async (movieId: number) => {
+    const getFavoriteMoviesbyUser = useCallback(async (userId: string) => {
         try {
 
             //Get app user
 
             const movieRates: MovieRate[] = [];
             if (db) {
-                const queryResult = query(collection(db, "users"), where("movieId", "==", movieId));
+                const queryResult = query(collection(db, "favoriteMoviesbyUser"), where("movieId", "==", userId));
                 const querySnapshot = await getDocs(queryResult);
                 if (querySnapshot.docs.length > 0) {
                     querySnapshot.forEach((doc) => {
@@ -317,7 +365,28 @@ export const FirebaseProvider = ({ children }: any) => {
         } catch (error) {
             console.log(error);
         }
-    }, []);
+    }, [db]);
+
+
+    const checkIfExistFavorite = useCallback(async (userId: string | undefined, movieId: number | undefined) => {
+        if (db) {
+            console.log("Check exist favorite");
+            console.log("userId: ",userId);
+            console.log("movieId: ",movieId);
+                        
+            const queryResult = query(collection(db, "favoriteMoviesbyUser"), where("movieId", "==", movieId), where("userId", "==", userId));
+            const querySnapshot = await getDocs(queryResult);
+            if (querySnapshot.docs.length > 0) {   
+                return true;
+            }
+            else
+                return false;
+        }
+
+        return undefined;
+
+    }, [db]);
+
     /**********************/
 
     const authStateChanged = React.useCallback(
@@ -362,8 +431,11 @@ export const FirebaseProvider = ({ children }: any) => {
             login,
             logout,
             securityRegister,
+            checkIfExistFavorite,
 
             insertMovieRate,
+            insertFavoriteMovieByUser,
+            deleteFavoriteMovieByUser,
             getMovieRatesByMovieId,
         }),
         [
@@ -374,8 +446,11 @@ export const FirebaseProvider = ({ children }: any) => {
             login,
             logout,
             securityRegister,
+            checkIfExistFavorite,
 
             insertMovieRate,
+            insertFavoriteMovieByUser,
+            deleteFavoriteMovieByUser,
             getMovieRatesByMovieId,
         ]
     );

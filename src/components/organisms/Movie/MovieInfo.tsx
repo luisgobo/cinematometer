@@ -11,8 +11,7 @@ import { isValidDateValue } from "@testing-library/user-event/dist/utils";
 
 export const MovieInfoModal = () => {
 
-    const[isFavorite,setIsFavorite] = React.useState(false);
-
+    
     const handleSelectedRate = ((ratedValue: number) => {
         console.log("ratedValue", ratedValue);
     });
@@ -23,15 +22,66 @@ export const MovieInfoModal = () => {
         specificMovieStatus,
     } = useMovies();
 
-    const { appUser } = useFierbase();
-
-
+    const { 
+        appUser,
+        checkIfExistFavorite,
+        insertFavoriteMovieByUser,
+        deleteFavoriteMovieByUser
+    } = useFierbase();
+    
+    
+    const[isFavorite, setIsFavorite] = React.useState(false);
     const [roundedRate, setRoundedRate] = React.useState(0);
 
-    const handleFavoriteSelection = (isFavoriteSelected: boolean)=>{
-        console.log("isSelected:", isFavoriteSelected);
-        setIsFavorite(isFavoriteSelected);        
+    const handleFavoriteSelection = async (favoriteOptionSelected: boolean)=>{        
+        setIsFavorite(favoriteOptionSelected);
+        //userId: string, movieId: number
+        
+        if(appUser?.authenticationId !== undefined && movie?.id){
+            console.log("check favorite");
+            
+            // checkIfExistFavorite(appUser?.authenticationId, movie?.id).then( async (existfavorite) =>{
+            //     console.log("existfavorite: ",existfavorite);
+            //     console.log("favoriteOptionSelected: ",favoriteOptionSelected);
+                
+            //     if(favoriteOptionSelected && !existfavorite){
+            //         console.log("Not in favorites");
+            //         console.log("Register Favorite");
+            //         await insertFavoriteMovieByUser("", appUser?.authenticationId, movie?.id);
+            //         return;
+            //     }
+            //     if(!favoriteOptionSelected && existfavorite){
+            //         console.log("Is favorite");
+            //         console.log("Remove Favorite");            
+            //         deleteFavoriteMovieByUser(appUser?.authenticationId, movie?.id);                    
+            //     }
+            // });
+                        
+                
+                if(favoriteOptionSelected){
+                    console.log("Not in favorites");
+                    console.log("Register Favorite");
+                    await insertFavoriteMovieByUser("", appUser?.authenticationId, movie?.id);
+                    return;
+                }
+                if(!favoriteOptionSelected){
+                    console.log("Is favorite");
+                    console.log("Remove Favorite");            
+                    deleteFavoriteMovieByUser(appUser?.authenticationId, movie?.id);                    
+                }
+            
+        }        
     }
+
+    React.useEffect(() => {
+
+        if (appUser && movie) {
+            checkIfExistFavorite(appUser.authenticationId, movie.id).then((result) =>{
+                console.log("result:", result);
+                setIsFavorite(result? result: false);
+            });
+        }
+    }, [appUser, movie, checkIfExistFavorite])
 
     React.useEffect(() => {
 
@@ -39,7 +89,7 @@ export const MovieInfoModal = () => {
             const rounded = Math.round(selectedMovieRate);            
             setRoundedRate(rounded);
         }
-    }, [selectedMovieRate])
+    }, [selectedMovieRate])    
 
     return (
         <>

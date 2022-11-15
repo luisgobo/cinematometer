@@ -11,7 +11,7 @@ const AuthorizedPage: React.FC<PropsWithChildren> = ({children}) => {
         if (firebaseUser){
             console.log('firebase user found in AuthorizedPage')
             //Commented because of conflict witn nav bar
-            //navigate("/");
+            navigate("/");
         }
     }, [firebaseUser]);    
 
