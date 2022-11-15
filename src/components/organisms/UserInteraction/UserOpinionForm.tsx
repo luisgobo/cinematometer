@@ -1,17 +1,51 @@
 import { Timestamp } from "firebase/firestore";
 import { Formik } from "formik";
-import styled from '@emotion/styled'
+import {styled} from '@mui/material/styles'
 import { LoadingButton } from "@mui/lab";
 import { useFierbase } from "../../../context/use-firebase";
 import { MovieRate } from "../../../models/MovieRate";
 import AuthorizedPage from "../../layouts/AuthorizedPage";
 import * as Yup from 'yup'
 import { TextField } from "@mui/material";
+import { blueGrey } from "@mui/material/colors";
 
 const MovieRateSchema = Yup.object().shape({
   comments: Yup.string().required(),
   movieRateValue: Yup.number().required().min(1).max(10)
 });
+
+const CssTextField = styled(TextField)({
+  '& label.Mui-focused': {
+    color: 'gray',
+  },
+  '& .MuiInput-underline:after': {
+    borderBottomColor: 'gray',
+  },
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: 'lightGray',                 
+    },
+    '&:hover fieldset': {
+      borderColor: '#ffffff',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: 'gray',
+    },
+  },
+  width:560,
+  marginRight: 20,
+  marginBottom: 10 
+});
+
+/*
+  width: 560px;    
+    border-color: aliceblue;
+    background-color: transparent ;
+    color: aliceblue;
+    margin-right: 20px;    
+    position: fixed;
+*/
+
 
 export interface UserOpinionFormProps {
   userId: string,
@@ -19,28 +53,37 @@ export interface UserOpinionFormProps {
 }
 
 export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
-
+  
   userId,
   movieId
-
+  
 }) => {
-
+  
+  
   const { insertMovieRate } = useFierbase();
-
+  
   const handleFormSubmit = async (values: MovieRate) => {
     try {      
       console.log("Handle Submit userId:", userId);
       
       await insertMovieRate(values.movieRateId, values.userId, values.movieId, values.comments, values.movieRateValue);
+      
     } catch (error) {
       console.log(error);
     }
   }
-
-  const ButtonStyled = styled(LoadingButton)(() => ({
-    borderRadius: '25px'
+  
+  const ButtonStyled = styled(LoadingButton)(() => ({        
+    color: 'black',
+    backgroundColor: 'aliceblue',
+    paddingTop: 8,
+    marginLeft: 630,
+    marginTop: 10,
+    marginBottom: 10,
+    borderRadius: 25,
+    
   }));
-
+  
   return (
     <AuthorizedPage>
       <main>
@@ -75,7 +118,7 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
 
               <h3 className="user-opinion-p">Let us know about this movie</h3>
 
-              <TextField
+              <CssTextField
                 error={touched.comments && !!errors.comments}
                 helperText={touched.comments && errors.comments}
                 required
@@ -84,11 +127,12 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
                 value={values.comments}
                 placeholder='Add a comment'
                 onChange={handleChange("comments")}
-                onBlur={handleBlur("comments")}
-                className="user-opinion-textbox"
+                onBlur={handleBlur("comments")}                
                 variant="outlined"
+                multiline
+                rows={2}                
               />
-
+              
               <TextField
                 error={touched.movieRateValue && !!errors.movieRateValue}
                 helperText={touched.movieRateValue && errors.movieRateValue}
@@ -101,18 +145,11 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
                 onBlur={handleBlur("movieRateValue")}
                 className="user-opinion-textbox2" />
 
-
-              {/* <MinimalTextbox 
-                  inputId="Test" 
-                  inputLabel="test" 
-                  handleChange={handleChange} 
-                  handleBlur={handleBlur}/> */}
-
               <ButtonStyled
                 loading={isSubmitting || isValidating}
                 disabled={!isValid}
                 variant="outlined"
-                type="submit"
+                type="submit"                
               >
                 Submit rate
               </ButtonStyled>

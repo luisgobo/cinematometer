@@ -6,11 +6,13 @@
 .user-opinion-form{
     position: fixed;
     background-color: $base-color;
+    margin-top: -20px;
+    padding: 10px;
 }
 
 .user-opinion-textbox{
     
-    width: 595px;    
+    width: 560px;    
     border-color: aliceblue;
     background-color: transparent ;
     color: aliceblue;
