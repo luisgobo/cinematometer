@@ -41,9 +41,10 @@ const firebaseCredentials: FirebaseOptions = {
 
 export interface FirebaseContextProps {
     app: FirebaseApp | null;
-    firebaseUser: User | undefined;
+    firebaseUser: User | undefined | null;
     appUser: AppUser | undefined;
     displayLoading: boolean
+    isLogOut: boolean,
     login: (
         email: string,
         password: string
@@ -73,6 +74,7 @@ export interface FirebaseContextProps {
     ) => Promise<void>,
 
     getMovieRatesByMovieId: any,
+    setIsLogOut: any
 
 }
 
@@ -82,6 +84,7 @@ const FirebaseContext = createContext<FirebaseContextProps>({
     firebaseUser: undefined,
     appUser: undefined,
     displayLoading: true,
+    isLogOut: false,
     login: () => Promise.resolve(undefined),
     logout: () => Promise.resolve(undefined),
     securityRegister: () => Promise.resolve(undefined),
@@ -91,14 +94,16 @@ const FirebaseContext = createContext<FirebaseContextProps>({
     deleteFavoriteMovieByUser: () => Promise.resolve(),
     insertFavoriteMovieByUser: () => Promise.resolve(),
     getMovieRatesByMovieId: {},
+    setIsLogOut: {}
 });
 
 export const FirebaseProvider = ({ children }: any) => {
     const [app, setApp] = React.useState<FirebaseApp | null>(null);
     const [db, setDb] = React.useState<Firestore>();
-    const [firebaseUser, setFirebaseUser] = React.useState<User | undefined>(undefined);
+    const [firebaseUser, setFirebaseUser] = React.useState<User | undefined | null>(undefined);
     const [appUser, setAppUser] = React.useState<AppUser | undefined>(undefined);
     const [displayLoading, setDisplayLoading] = React.useState(true);
+    const [isLogOut, setIsLogOut] = React.useState(true);
     const navigate = useNavigate();
 
     const login = useCallback(async (email: string, password: string) => {
@@ -119,14 +124,9 @@ export const FirebaseProvider = ({ children }: any) => {
     const logout = useCallback(async () => {
         const auth = getAuth();
         signOut(auth);
-        if (db) {
-
-            clearIndexedDbPersistence(db).catch(error => {
-                console.error('Could not enable persistence:', error.code);
-            })
-        }
-
-        navigate("/login");
+        setFirebaseUser(null);
+        setIsLogOut(true);
+        navigate("/");
     }, [navigate])
 
     const getUserDataByEmail = async (email: string) => {
@@ -343,11 +343,9 @@ export const FirebaseProvider = ({ children }: any) => {
                 const queryResult = query(collection(db, "favoriteMoviesbyUser"), where("userId", "==", userId));
                 const querySnapshot = await getDocs(queryResult);                            
                 const movieIds: number[] = [];
-                if (querySnapshot.docs.length > 0) {
-                    const movies:Movie[] = [];
+                if (querySnapshot.docs.length > 0) {                    
                     querySnapshot.forEach((doc) => {
-                        movieIds.push(doc.data().movieId);                                              
-                        //return movies;                        
+                        movieIds.push(doc.data().movieId);                    
                     });
                 }
                 return movieIds;                
@@ -416,6 +414,7 @@ export const FirebaseProvider = ({ children }: any) => {
             displayLoading,
             login,
             logout,
+            isLogOut,
             securityRegister,
             checkIfExistFavorite,
             getFavoriteMovieIds,
@@ -424,6 +423,7 @@ export const FirebaseProvider = ({ children }: any) => {
             insertFavoriteMovieByUser,
             deleteFavoriteMovieByUser,
             getMovieRatesByMovieId,
+            setIsLogOut,
         }),
         [
             app,
@@ -432,6 +432,7 @@ export const FirebaseProvider = ({ children }: any) => {
             displayLoading,
             login,
             logout,
+            isLogOut,
             securityRegister,
             checkIfExistFavorite,
             getFavoriteMovieIds,
@@ -440,6 +441,7 @@ export const FirebaseProvider = ({ children }: any) => {
             insertFavoriteMovieByUser,
             deleteFavoriteMovieByUser,
             getMovieRatesByMovieId,
+            setIsLogOut,
         ]
     );
 

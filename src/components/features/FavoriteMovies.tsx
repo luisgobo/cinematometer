@@ -55,7 +55,7 @@ export const FavoriteMovies = () => {
 
 
     return (
-        <ProtectedPage>
+        // <ProtectedPage>
             <DashboardLayout>
                 {
                     displayFavoritesCarousel ? 
@@ -83,6 +83,6 @@ export const FavoriteMovies = () => {
                 }
             </DashboardLayout>
 
-        </ProtectedPage>
+        // </ProtectedPage>
     )
 }

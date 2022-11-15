@@ -4,16 +4,26 @@ import { useNavigate } from "react-router-dom";
 
 const AuthorizedPage: React.FC<PropsWithChildren> = ({children}) => {
 
-    const { firebaseUser, displayLoading } = useFierbase();
+    const { firebaseUser, displayLoading, isLogOut, setIsLogOut } = useFierbase();
     const navigate = useNavigate();
 
     React.useEffect(() => {
         if (firebaseUser){
+            console.log("firebaseUser:", firebaseUser);
+            
             console.log('firebase user found in AuthorizedPage')
             //Commented because of conflict witn nav bar
-            navigate("/");
+            console.log("isLogOut", isLogOut);
+            
+            if(!isLogOut &&firebaseUser)
+                navigate("/");            
+            else{                
+                navigate("/login");
+                setIsLogOut(false);
+
+            }
         }
-    }, [firebaseUser]);    
+    }, [firebaseUser, isLogOut]);    
 
     if (displayLoading) {
         return(

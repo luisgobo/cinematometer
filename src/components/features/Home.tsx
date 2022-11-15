@@ -36,7 +36,7 @@ export const Home = () => {
   }
 
   return (
-    <ProtectedPage>
+    //<ProtectedPage>
 
       <DashboardLayout>
         {
@@ -70,6 +70,6 @@ export const Home = () => {
         }
       </DashboardLayout>
 
-    </ProtectedPage>
+    //</ProtectedPage>
   );
 }
