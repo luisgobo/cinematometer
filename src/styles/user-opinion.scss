@@ -25,25 +25,25 @@
 }
 
 .user-opinion-textbox2 {
-
     width: 175px;
-    border-color: aliceblue;
-    background-color: transparent;
-    color: aliceblue;
-
-    position: fixed;
-
+    //display: none !important;
 }
 
 .user-opinion-list-content {
-    position: absolute;
-    padding-bottom: 40px;
-    margin-top: 140px;
-    height: 120px;
-    width: 780px;
+    position: absolute;   
+    right: 0;
+    margin-right: 0;
+    top: 0;
+    margin-top: -835px;
+    height: 550px;
+    width: 420px;
     flex: 1 1;
     overflow-y: scroll !important;
-    overflow: auto;
+    overflow: auto;    
+    padding-top: 10px;
+    padding-left: 25px;    
+    
+    border: 1px solid #f1f1f1 ;
 }
 
 /**************************/

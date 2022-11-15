@@ -6,9 +6,8 @@ import { useFierbase } from "../../../context/use-firebase";
 import { MovieRate } from "../../../models/MovieRate";
 import AuthorizedPage from "../../layouts/AuthorizedPage";
 import * as Yup from 'yup'
-import { TextField } from "@mui/material";
-import React, { MouseEventHandler } from "react";
-import { Link } from "react-router-dom";
+import { Hidden, TextField } from "@mui/material";
+import { StarEvaluation } from "../../atoms/StarEvaluation";
 
 const MovieRateSchema = Yup.object().shape({
   comments: Yup.string().required(),
@@ -33,10 +32,22 @@ const CssTextField = styled(TextField)({
       borderColor: 'gray',
     },
   },
-  width: 560,
+  width: 1150,
   marginRight: 20,
+  marginTop: 10,
   marginBottom: 10
 });
+
+const ButtonStyled = styled(LoadingButton)(() => ({
+  color: 'black',
+  backgroundColor: 'aliceblue',
+  paddingTop: 8,
+  marginLeft: 0,
+  marginTop: 10,
+  marginBottom: 10,
+  borderRadius: 25,
+
+}));
 
 export interface UserOpinionFormProps {
   userId: string,
@@ -45,12 +56,9 @@ export interface UserOpinionFormProps {
 }
 
 export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
-
   userId,
   movieId,
-
 }) => {
-
 
   const { insertMovieRate } = useFierbase();
 
@@ -64,17 +72,6 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
       console.log(error);
     }
   }
-
-  const ButtonStyled = styled(LoadingButton)(() => ({
-    color: 'black',
-    backgroundColor: 'aliceblue',
-    paddingTop: 8,
-    marginLeft: 630,
-    marginTop: 10,
-    marginBottom: 10,
-    borderRadius: 25,
-
-  }));
 
   return (
     <AuthorizedPage>
@@ -109,6 +106,26 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
             <form className="user-opinion-form" onSubmit={handleSubmit}>
 
               <h3 className="user-opinion-p">Let us know about this movie</h3>
+              
+              <TextField
+                error={touched.movieRateValue && !!errors.movieRateValue}
+                helperText={touched.movieRateValue && errors.movieRateValue}
+                required
+                label="Movie Rate"
+                type="number"
+                value={values.movieRateValue}
+                placeholder='Type a value'
+                onChange={handleChange("movieRateValue")}
+                onBlur={handleBlur("movieRateValue")}
+                className="user-opinion-textbox2" 
+                hidden
+              />
+              
+              <StarEvaluation 
+                isReadOnly={false} 
+                roundedRate={1} 
+                HandleSelectedRate={undefined}
+              />
 
               <CssTextField
                 error={touched.comments && !!errors.comments}
@@ -123,19 +140,7 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
                 variant="outlined"
                 multiline
                 rows={2}
-              />
-
-              <TextField
-                error={touched.movieRateValue && !!errors.movieRateValue}
-                helperText={touched.movieRateValue && errors.movieRateValue}
-                required
-                label="Movie Rate"
-                type="number"
-                value={values.movieRateValue}
-                placeholder='Type a value'
-                onChange={handleChange("movieRateValue")}
-                onBlur={handleBlur("movieRateValue")}
-                className="user-opinion-textbox2" />
+              />             
 
               <ButtonStyled
                 loading={isSubmitting || isValidating}

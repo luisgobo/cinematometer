@@ -22,7 +22,7 @@ export const MovieInfoModal: React.FC<MovieInfoModalProps>  = ({
     const [extendCommentPane, setExtendCommentPane] = React.useState(false);
 
     const handleSelectedRate = ((ratedValue: number) => {
-        console.log("ratedValue", ratedValue);
+        console.log("ratedValue:", ratedValue);
     });
 
     const handleShowComments = () => {
@@ -152,12 +152,8 @@ export const MovieInfoModal: React.FC<MovieInfoModalProps>  = ({
                                 userId={appUser?.authenticationId === undefined ? "" : appUser.authenticationId}
                                 movieId={movie?.id} HandleShowComments={handleShowComments}/>                            
                         </div>
-                        <div className="popup-child">
-                            <div id="mySidepanel" className={extendCommentPane ? "sidepanel expand-menu" : "sidepanel hide-menu"}>
-                                <Link onClick={handleHideComments} className="fa fa-fw fa-home" to={""}>×</Link>
-                                <UserOpinionListByMovie movieId={movie?.id} />
-                            </div>
-                            <button className="openbtn" onClick={handleShowComments}>Show Comments</button>
+                        <div className="popup-child">                                                        
+                            <UserOpinionListByMovie movieId={movie?.id} />                            
                         </div>
                             
                     </div>
