@@ -1,13 +1,14 @@
 import { Timestamp } from "firebase/firestore";
 import { Formik } from "formik";
-import {styled} from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 import { LoadingButton } from "@mui/lab";
 import { useFierbase } from "../../../context/use-firebase";
 import { MovieRate } from "../../../models/MovieRate";
 import AuthorizedPage from "../../layouts/AuthorizedPage";
 import * as Yup from 'yup'
 import { TextField } from "@mui/material";
-import { blueGrey } from "@mui/material/colors";
+import React, { MouseEventHandler } from "react";
+import { Link } from "react-router-dom";
 
 const MovieRateSchema = Yup.object().shape({
   comments: Yup.string().required(),
@@ -23,7 +24,7 @@ const CssTextField = styled(TextField)({
   },
   '& .MuiOutlinedInput-root': {
     '& fieldset': {
-      borderColor: 'lightGray',                 
+      borderColor: 'lightGray',
     },
     '&:hover fieldset': {
       borderColor: '#ffffff',
@@ -32,48 +33,39 @@ const CssTextField = styled(TextField)({
       borderColor: 'gray',
     },
   },
-  width:560,
+  width: 560,
   marginRight: 20,
-  marginBottom: 10 
+  marginBottom: 10
 });
-
-/*
-  width: 560px;    
-    border-color: aliceblue;
-    background-color: transparent ;
-    color: aliceblue;
-    margin-right: 20px;    
-    position: fixed;
-*/
-
 
 export interface UserOpinionFormProps {
   userId: string,
   movieId: number,
+  HandleShowComments: Function
 }
 
 export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
-  
+
   userId,
-  movieId
-  
+  movieId,
+
 }) => {
-  
-  
+
+
   const { insertMovieRate } = useFierbase();
-  
+
   const handleFormSubmit = async (values: MovieRate) => {
-    try {      
+    try {
       console.log("Handle Submit userId:", userId);
-      
+
       await insertMovieRate(values.movieRateId, values.userId, values.movieId, values.comments, values.movieRateValue);
-      
+
     } catch (error) {
       console.log(error);
     }
   }
-  
-  const ButtonStyled = styled(LoadingButton)(() => ({        
+
+  const ButtonStyled = styled(LoadingButton)(() => ({
     color: 'black',
     backgroundColor: 'aliceblue',
     paddingTop: 8,
@@ -81,9 +73,9 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
     marginTop: 10,
     marginBottom: 10,
     borderRadius: 25,
-    
+
   }));
-  
+
   return (
     <AuthorizedPage>
       <main>
@@ -127,12 +119,12 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
                 value={values.comments}
                 placeholder='Add a comment'
                 onChange={handleChange("comments")}
-                onBlur={handleBlur("comments")}                
+                onBlur={handleBlur("comments")}
                 variant="outlined"
                 multiline
-                rows={2}                
+                rows={2}
               />
-              
+
               <TextField
                 error={touched.movieRateValue && !!errors.movieRateValue}
                 helperText={touched.movieRateValue && errors.movieRateValue}
@@ -149,7 +141,7 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
                 loading={isSubmitting || isValidating}
                 disabled={!isValid}
                 variant="outlined"
-                type="submit"                
+                type="submit"
               >
                 Submit rate
               </ButtonStyled>

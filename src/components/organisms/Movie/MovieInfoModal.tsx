@@ -7,6 +7,7 @@ import { UserOpinionForm } from "../UserInteraction/UserOpinionForm";
 import { useFierbase } from "../../../context/use-firebase";
 import { UserOpinionListByMovie } from "../UserInteraction/UserOpinionListByMovie";
 import { StarCheck } from "../../atoms/StarCheck";
+import { Link } from "react-router-dom";
 
 export interface MovieInfoModalProps {
     HandleUpdateFavoriteCardStatus: Function | undefined;
@@ -16,10 +17,22 @@ export const MovieInfoModal: React.FC<MovieInfoModalProps>  = ({
     HandleUpdateFavoriteCardStatus
 }) => {
 
-    
+    const[isFavorite, setIsFavorite] = React.useState(false);
+    const [roundedRate, setRoundedRate] = React.useState(0);
+    const [extendCommentPane, setExtendCommentPane] = React.useState(false);
+
     const handleSelectedRate = ((ratedValue: number) => {
         console.log("ratedValue", ratedValue);
     });
+
+    const handleShowComments = () => {
+        setExtendCommentPane(true);
+        //return undefined;
+      }
+    
+      const handleHideComments = () => {
+        setExtendCommentPane(false);
+      }
 
     const {
         selectedMovieRate,
@@ -35,8 +48,9 @@ export const MovieInfoModal: React.FC<MovieInfoModalProps>  = ({
     } = useFierbase();
 
     
-    const[isFavorite, setIsFavorite] = React.useState(false);
-    const [roundedRate, setRoundedRate] = React.useState(0);
+ 
+
+
 
     const handleFavoriteSelection = async (favoriteOptionSelected: boolean)=>{        
         setIsFavorite(favoriteOptionSelected);
@@ -83,9 +97,9 @@ export const MovieInfoModal: React.FC<MovieInfoModalProps>  = ({
                 {specificMovieStatus === "error" && <p>Error fetching data</p>}
                 {specificMovieStatus === "loading" && <p>Fetching data...</p>}
                 {(specificMovieStatus === "success" && movie !== undefined) ?
-                    <div>
+                    <div className="popup-container">
 
-                        <div className="movie-card">
+                        <div className="movie-card popup-child">
                                 <div className="favorite-selection">
                                     <StarCheck isReadOnly={false} isChecked={isFavorite} HandleFavoriteSelection={handleFavoriteSelection} />
                                 </div>                                
@@ -133,15 +147,19 @@ export const MovieInfoModal: React.FC<MovieInfoModalProps>  = ({
                                 </div>
                             </div>
                         </div>
-
-                        <div>
+                        <div className="popup-child">
                             <UserOpinionForm
-                                userId={
-                                    appUser?.authenticationId === undefined ? "" : appUser.authenticationId}
-                                movieId={movie?.id}
-                            />
-                            <UserOpinionListByMovie movieId={movie?.id} />
+                                userId={appUser?.authenticationId === undefined ? "" : appUser.authenticationId}
+                                movieId={movie?.id} HandleShowComments={handleShowComments}/>                            
                         </div>
+                        <div className="popup-child">
+                            <div id="mySidepanel" className={extendCommentPane ? "sidepanel expand-menu" : "sidepanel hide-menu"}>
+                                <Link onClick={handleHideComments} className="fa fa-fw fa-home" to={""}>×</Link>
+                                <UserOpinionListByMovie movieId={movie?.id} />
+                            </div>
+                            <button className="openbtn" onClick={handleShowComments}>Show Comments</button>
+                        </div>
+                            
                     </div>
                     : null
                 }
