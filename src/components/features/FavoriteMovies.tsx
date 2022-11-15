@@ -6,6 +6,8 @@ import { DashboardLayout } from "../layouts/dashboard/DashboardLayout"
 import ProtectedPage from "../layouts/ProtectedPage"
 import { InfoCarousel } from "../organisms/Carousel/InfoCarousel";
 import { MovieInfoModal } from "../organisms/Movie/MovieInfoModal"
+import "../../styles/favorite.scss"
+import { Link } from "@mui/material";
 
 export const FavoriteMovies = () => {
 
@@ -69,7 +71,15 @@ export const FavoriteMovies = () => {
                                 listStatus={listStatus}
                             />
                         </div>
-                        :<></>
+                        :<>
+                            <div className="information-page">
+                                <h1>You have no favorite movies seected yet</h1>
+                                <h3>You ca go to home page and see som movies to set it as favorite</h3>
+                                <h3> 
+                                    <Link href="/" underline="none">{" Go Home"} </Link>                                
+                                </h3> 
+                            </div>
+                        </>
                 }
             </DashboardLayout>
 

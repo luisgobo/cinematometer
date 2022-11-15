@@ -74,12 +74,14 @@ const ButtonStyled = styled(LoadingButton)(() => ({
 
 export interface UserOpinionFormProps {
   userId: string,
+  userName: string,
   movieId: number,
   HandleUpdateComments: Function
 }
 
 export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
   userId,
+  userName,
   movieId,
   HandleUpdateComments
 }) => {
@@ -90,7 +92,7 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
     try {
       console.log("Handle Submit userId:", userId);
 
-      await insertMovieRate(values.movieRateId, values.userId, values.movieId, values.comments, values.movieRateValue);
+      await insertMovieRate(values.movieRateId, values.userId, values.userName, values.movieId, values.comments, values.movieRateValue);
       HandleUpdateComments(true);
 
     } catch (error) {
@@ -105,6 +107,7 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
           initialValues={{
             movieRateId: '',
             userId: userId,
+            userName: userName,
             movieId: movieId,
             comments: '',
             movieRateValue: 0,

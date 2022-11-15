@@ -70,7 +70,7 @@ export const UserOpinionListByMovie: React.FC<UserOpinionListByMovieProps> = ({
                   {movieRates?.map((currentMovieRate: MovieRate) => (
                     <li key={currentMovieRate.movieRateId}>
                       <div>
-                        <div>Username: {currentMovieRate.userId}</div>
+                        <div>Username: {currentMovieRate.userName}</div>
                         <div>
                           <div>rate:{currentMovieRate.movieRateValue}/10</div>
                           <div>opinion: {currentMovieRate.comments}</div>

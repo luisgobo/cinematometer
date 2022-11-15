@@ -210,7 +210,7 @@ export const FirebaseProvider = ({ children }: any) => {
 
     /**********************/
     //Movies Registry
-    const insertMovieRate = useCallback(async (movieRateId: string, userId: string, movieId: number, comments: string, movieRateValue: number) => {
+    const insertMovieRate = useCallback(async (movieRateId: string, userId: string, userName: string, movieId: number, comments: string, movieRateValue: number) => {
 
         try {
             if (db) {
@@ -218,24 +218,31 @@ export const FirebaseProvider = ({ children }: any) => {
                 const movieRateReg: MovieRate = {
                     movieRateId: movieRateId,
                     userId: userId,
+                    userName: userName,
                     movieId: movieId,
                     comments: comments,
                     movieRateValue: movieRateValue,
-                    created: Timestamp.now()
+                    created: Timestamp.now(),
                 }
 
-                await addDoc(collection(db, 'movieRate'), {
-                    userId: userId,
-                    movieId: movieId,
-                    comments: comments,
-                    movieRateValue: movieRateValue,
-                    created: Timestamp.now()
-                })
-                    .then((result) => {
+                await addDoc(collection(db, 'movieRate'), movieRateReg)
+                .then((result) => {
+                    const movieRatedResult = { ...movieRateReg, movieRateId: result.id }                    
+                });
 
-                        const movieRatedResult = { ...movieRateReg, movieRateId: result.id }
-                        // setAppUser(user);
-                    });
+                // await addDoc(collection(db, 'movieRate'), {
+                //     userId: userId,
+                //     userName: userName,
+                //     movieId: movieId,
+                //     comments: comments,
+                //     movieRateValue: movieRateValue,
+                //     created: Timestamp.now()
+                // })
+                // .then((result) => {
+
+                //     const movieRatedResult = { ...movieRateReg, movieRateId: result.id }
+                //     // setAppUser(user);
+                // });
             }
 
         } catch (error) {
@@ -256,6 +263,7 @@ export const FirebaseProvider = ({ children }: any) => {
                         const result: MovieRate = {
                             movieRateId: doc.id,
                             userId: doc.data().userId,
+                            userName: doc.data().userName,
                             movieId: doc.data().movieId,
                             comments: doc.data().comments,
                             movieRateValue: doc.data().movieRateValue,

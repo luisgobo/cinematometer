@@ -7,90 +7,82 @@ import { UserOpinionForm } from "../UserInteraction/UserOpinionForm";
 import { useFierbase } from "../../../context/use-firebase";
 import { UserOpinionListByMovie } from "../UserInteraction/UserOpinionListByMovie";
 import { StarCheck } from "../../atoms/StarCheck";
-import { Link } from "react-router-dom";
 
 export interface MovieInfoModalProps {
     HandleUpdateFavoriteCardStatus: Function | undefined;
 }
 
-export const MovieInfoModal: React.FC<MovieInfoModalProps>  = ({
+export const MovieInfoModal: React.FC<MovieInfoModalProps> = ({
     HandleUpdateFavoriteCardStatus
 }) => {
 
-    const[isFavorite, setIsFavorite] = React.useState(false);
+    const [isFavorite, setIsFavorite] = React.useState(false);
     const [roundedRate, setRoundedRate] = React.useState(0);
     const [refreshCommentList, setRefreshCommentList] = React.useState(false);
 
-    
+
     const {
         selectedMovieRate,
         specificMovie: movie,
         specificMovieStatus,
     } = useMovies();
 
-    const { 
+    const {
         appUser,
         checkIfExistFavorite,
         insertFavoriteMovieByUser,
         deleteFavoriteMovieByUser
     } = useFierbase();
-    
+
     const handleUpdateComments = ((refreshList: boolean) => {
         console.log("Update list:", refreshList);
-        
+
         setRefreshCommentList(refreshList);
     });
 
     const handleSelectedRate = ((ratedValue: number) => {
-        //console.log("ratedValue:", ratedValue);
+
     });
 
-    // const handleShowComments = () => {
-    //     setExtendCommentPane(true);        
-    // }
 
-    // const handleHideComments = () => {
-    //     setExtendCommentPane(false);
-    // }
-    
-    const handleFavoriteSelection = async (favoriteOptionSelected: boolean)=>{        
+    const handleFavoriteSelection = async (favoriteOptionSelected: boolean) => {
         setIsFavorite(favoriteOptionSelected);
-        
-        if(appUser?.authenticationId !== undefined && movie?.id){
-                if(favoriteOptionSelected){
-                    await insertFavoriteMovieByUser("", appUser?.authenticationId, movie?.id);
-                    return;
-                }
-                if(!favoriteOptionSelected){
-                    deleteFavoriteMovieByUser(appUser?.authenticationId, movie?.id);                    
-                }
-            
-        }        
+
+        if (appUser?.authenticationId !== undefined && movie?.id) {
+            if (favoriteOptionSelected) {
+                await insertFavoriteMovieByUser("", appUser?.authenticationId, movie?.id);
+                return;
+            }
+            if (!favoriteOptionSelected) {
+                deleteFavoriteMovieByUser(appUser?.authenticationId, movie?.id);
+            }
+
+        }
     }
 
     React.useEffect(() => {
 
         if (appUser && movie) {
-            checkIfExistFavorite(appUser.authenticationId, movie.id).then((result) =>{                
-                setIsFavorite(result? result: false);
+            checkIfExistFavorite(appUser.authenticationId, movie.id).then((result) => {
+                setIsFavorite(result ? result : false);
             });
         }
     }, [appUser, movie, checkIfExistFavorite])
 
     React.useEffect(() => {
-        if(HandleUpdateFavoriteCardStatus)
+        if (HandleUpdateFavoriteCardStatus)
             HandleUpdateFavoriteCardStatus(movie?.id);
-    
+
     }, [isFavorite])
-    
+
 
     React.useEffect(() => {
 
         if (selectedMovieRate > 0) {
-            const rounded = Math.round(selectedMovieRate);            
+            const rounded = Math.round(selectedMovieRate);
             setRoundedRate(rounded);
         }
-    }, [selectedMovieRate])    
+    }, [selectedMovieRate])
 
     return (
         <>
@@ -101,9 +93,9 @@ export const MovieInfoModal: React.FC<MovieInfoModalProps>  = ({
                     <div className="popup-container">
 
                         <div className="movie-card popup-child">
-                                <div className="favorite-selection">
-                                    <StarCheck isReadOnly={false} isChecked={isFavorite} HandleFavoriteSelection={handleFavoriteSelection} />
-                                </div>                                
+                            <div className="favorite-selection">
+                                <StarCheck isReadOnly={false} isChecked={isFavorite} HandleFavoriteSelection={handleFavoriteSelection} />
+                            </div>
                             <div className="movie-info-container">
                                 <a href={movie?.homepage}>
                                     <img
@@ -139,7 +131,7 @@ export const MovieInfoModal: React.FC<MovieInfoModalProps>  = ({
                                                 )
                                             })}
                                         </ul>
-                                    </div>                                    
+                                    </div>
                                     <div className="movie-overview">
                                         <p className="div-vertical-scroll">
                                             {movie?.overview}
@@ -151,17 +143,17 @@ export const MovieInfoModal: React.FC<MovieInfoModalProps>  = ({
                         <div className="popup-child">
                             <UserOpinionForm
                                 userId={appUser?.authenticationId === undefined ? "" : appUser.authenticationId}
-                                movieId={movie?.id} HandleUpdateComments={handleUpdateComments}/>                            
+                                userName={appUser?.name === undefined ? "" : appUser.name}
+                                movieId={movie?.id} HandleUpdateComments={handleUpdateComments}
+                            />
                         </div>
-                        <div className="popup-child">                                                        
+                        <div className="popup-child">
                             <UserOpinionListByMovie movieId={movie?.id} refreshMovieComments={refreshCommentList} />
                         </div>
-                            
                     </div>
                     : null
                 }
             </div>
-
         </>
     );
 }
