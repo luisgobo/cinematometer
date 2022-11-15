@@ -20,9 +20,9 @@ export const UserOpinionListByMovie: React.FC<UserOpinionListByMovieProps> = ({
   const [refreshRateList, setRefreshRateList] = React.useState(false);
 
 
-  // React.useEffect(() => {  
-  //   setRefreshRateList(refreshMovieComments);
-  // },[]);
+  React.useEffect(() => {  
+    setRefreshRateList(true);
+  },[]);
   
   React.useEffect(() => {  
     setRefreshRateList(refreshMovieComments);

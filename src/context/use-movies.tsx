@@ -130,54 +130,18 @@ export const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ child
     
     const retrieveFavoriteMoviesInfo = React.useCallback( async (movieIds: number[]|undefined)=> {
                 
-        const movies: Movie[] | undefined= [];        
-        
+        const movies: Movie[] | undefined= [];                
         movieIds?.map( async movieId => {
             await getSpecificMovie(movieId).then(async (res: Movie)=>{
-                //console.log("retrieveFavoriteMoviesInfo-getSpecificMovie-res", res);
                 movies.push(res);
-                //data comes here
             });
             
             console.log("movies after push res001: ", movies);
             setPivotMovieList(movies)
             
-        });
-        
-        // if(movieIds.length> 0 ){
-        //     const movies: Movie[] | undefined= []
-            
-        //     movieIds.forEach(movieId => {
-
-        //         const asd= getSpecificMovie(movieId) 
-        //         console.log("asd List:", asd);
-                
-
-        //         // const result: Movie = {
-        //         //     poster_path: doc.data().poster_path,
-        //         //     adult: doc.data().adult,
-        //         //     overview: doc.data().overview,
-        //         //     release_date: doc.data().release_date,
-        //         //     genre_ids: doc.data().genre_ids,
-        //         //     genres: doc.data().genres,
-        //         //     id: doc.data().id,
-        //         //     original_title: doc.data().original_title,
-        //         //     original_language: doc.data().original_language,
-        //         //     title: doc.data().title,
-        //         //     backdrop_path: doc.data().backdrop_path,
-        //         //     popularity: doc.data().popularity,
-        //         //     vote_count: doc.data().vote_count,
-        //         //     video: doc.data().video,
-        //         //     vote_average: doc.data().vote_average
-        //         // };
-        //         // movieRates.push(result);
-        //     });
-        //     return  movies;
-        // }
-
-        //return  undefined;
-        }
-    ,[]);
+        });                
+    
+    },[]);
 
     const contextValue: MovieApiContextProps = React.useMemo(
         () => ({

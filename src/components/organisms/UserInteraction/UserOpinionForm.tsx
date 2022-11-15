@@ -89,9 +89,7 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
   const { insertMovieRate } = useFierbase();
 
   const handleFormSubmit = async (values: MovieRate) => {
-    try {
-      console.log("Handle Submit userId:", userId);
-
+    try {      
       await insertMovieRate(values.movieRateId, values.userId, values.userName, values.movieId, values.comments, values.movieRateValue);
       HandleUpdateComments(true);
 

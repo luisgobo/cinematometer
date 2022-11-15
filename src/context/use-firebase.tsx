@@ -254,10 +254,10 @@ export const FirebaseProvider = ({ children }: any) => {
     const getMovieRatesByMovieId = React.useCallback(async (movieId: number) => {
         try {
             if (db) {
-                const movieRates: MovieRate[] = [];
+                const movieRates: MovieRate[] = [];                                
                 const queryResult = query(collection(db, "movieRate"), where("movieId", "==", movieId));
-                const querySnapshot = await getDocs(queryResult);
-
+                const querySnapshot = await getDocs(queryResult);                
+                
                 if (querySnapshot.docs.length > 0) {
                     querySnapshot.forEach((doc) => {
                         const result: MovieRate = {
@@ -340,12 +340,8 @@ export const FirebaseProvider = ({ children }: any) => {
     const getFavoriteMovieIds = useCallback(async (userId: string | undefined) => {
         try {   
             if (db) {
-                console.log("getFavoriteMovieIds...");
-                
                 const queryResult = query(collection(db, "favoriteMoviesbyUser"), where("userId", "==", userId));
-                const querySnapshot = await getDocs(queryResult);
-                
-                console.log("docs found...", querySnapshot.docs.length);
+                const querySnapshot = await getDocs(queryResult);                            
                 const movieIds: number[] = [];
                 if (querySnapshot.docs.length > 0) {
                     const movies:Movie[] = [];
