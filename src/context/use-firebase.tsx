@@ -1,19 +1,17 @@
 import React, { useContext, createContext, useCallback } from 'react';
 import { initializeApp, FirebaseApp, FirebaseOptions } from 'firebase/app'
-import { 
-    addDoc, 
-    collection, 
-    clearIndexedDbPersistence, 
-    deleteDoc, 
-    DocumentData, 
-    Firestore, 
-    getFirestore, 
-    getDocs, 
-    query, 
-    QueryDocumentSnapshot,
-    Timestamp, 
+import {
+    addDoc,
+    collection,
+    clearIndexedDbPersistence,
+    deleteDoc,
+    Firestore,
+    getFirestore,
+    getDocs,
+    query,
+    Timestamp,
     where,
-    doc, 
+    doc,
 } from 'firebase/firestore'
 import "../styles/dashboard.scss";
 
@@ -29,6 +27,8 @@ import { useNavigate } from "react-router-dom";
 import { AppUser } from '../models/AppUser';
 import { MovieRate } from '../models/MovieRate';
 import { FavoriteMovie } from '../models/FavoriteMovie';
+import { Movie } from '../models/movie';
+import { useMovies } from './use-movies';
 
 const firebaseCredentials: FirebaseOptions = {
     apiKey: process.env.REACT_APP_APIKEY,
@@ -56,23 +56,26 @@ export interface FirebaseContextProps {
     ) => Promise<UserCredential | undefined>;
     checkIfExistFavorite: (
         userId: string | undefined,
-        movieId: number| undefined
-    ) => Promise< boolean | undefined>
-
+        movieId: number | undefined
+    ) => Promise<boolean | undefined>
+    getFavoriteMovieIds: (
+        userId: string | undefined
+    ) => Promise<number[] | undefined>
     insertMovieRate: any,
-    insertFavoriteMovieByUser: (        
-        favoriteMovieId:string, 
-        userId: string, 
+    insertFavoriteMovieByUser: (
+        favoriteMovieId: string,
+        userId: string,
         movieId: number
-    ) => Promise <void>,
+    ) => Promise<void>,
     deleteFavoriteMovieByUser: (
-        userId: string, 
+        userId: string,
         movieId: number
-    ) => Promise <void>,
-    
+    ) => Promise<void>,
+
     getMovieRatesByMovieId: any,
-    
+
 }
+
 
 const FirebaseContext = createContext<FirebaseContextProps>({
     app: null,
@@ -83,9 +86,9 @@ const FirebaseContext = createContext<FirebaseContextProps>({
     logout: () => Promise.resolve(undefined),
     securityRegister: () => Promise.resolve(undefined),
     checkIfExistFavorite: () => Promise.resolve(undefined),
-    
+    getFavoriteMovieIds: () => Promise.resolve(undefined),
     insertMovieRate: {},
-    deleteFavoriteMovieByUser:() => Promise.resolve(),
+    deleteFavoriteMovieByUser: () => Promise.resolve(),
     insertFavoriteMovieByUser: () => Promise.resolve(),
     getMovieRatesByMovieId: {},
 });
@@ -276,32 +279,26 @@ export const FirebaseProvider = ({ children }: any) => {
 
     /**********************/
     //Favorite movies by user
-    const insertFavoriteMovieByUser = useCallback(async (favoriteMovieId:string, userId: string, movieId: number) => {
-        console.log("insertFavoriteMovieByUser..");
-        
+    const insertFavoriteMovieByUser = useCallback(async (favoriteMovieId: string, userId: string, movieId: number) => {
         try {
-            if (db) {                
-                checkIfExistFavorite(userId, movieId).then(async (existField: boolean | undefined)=>{
-                    console.log("existField: ", existField);
-                    if(!existField){
-                        console.log("Insert field");
+            if (db) {
+                checkIfExistFavorite(userId, movieId).then(async (existField: boolean | undefined) => {
+                    if (!existField) {
                         const favoriteMovioeReg: FavoriteMovie = {
                             favoriteMovieId: favoriteMovieId,
                             userId: userId,
                             movieId: movieId,
                             created: Timestamp.now()
                         }
-        
+
                         await addDoc(collection(db, 'favoriteMoviesbyUser'), {
                             userId: userId,
                             movieId: movieId,
                             created: Timestamp.now()
                         })
-                        .then((result) => {
-                            console.log("Insert favorite result: ", result);                            
-                            const favoriteMovieResult = { ...favoriteMovioeReg, favoriteMovieId: result.id }
-                            // setAppUser(user);
-                        });
+                            .then((result) => {                                
+                                const favoriteMovieResult = { ...favoriteMovioeReg, favoriteMovieId: result.id }                                
+                            });
                     }
                 });
             }
@@ -316,18 +313,14 @@ export const FirebaseProvider = ({ children }: any) => {
         try {
             if (db) {
 
-                console.log("delete favorite");
-                
                 const queryResult = query(collection(db, "favoriteMoviesbyUser"), where("movieId", "==", movieId), where("userId", "==", userId));
                 const querySnapshot = await getDocs(queryResult);
-                console.log("querySnapshot.docs.length", querySnapshot.docs.length);
-                
-                querySnapshot.forEach((element)  => {
+                querySnapshot.forEach((element) => {
                     const docRef = doc(db, "favoriteMoviesbyUser", element.id);
-                    return deleteDoc(docRef).then((result)=>{
-                        console.log("document deleted");                        
+                    return deleteDoc(docRef).then((result) => {
+                        console.log("document deleted");
                     });
-                });                
+                });
             }
         } catch (error) {
             console.log(error);
@@ -336,32 +329,25 @@ export const FirebaseProvider = ({ children }: any) => {
 
     }, [db]);
 
-    const getFavoriteMoviesbyUser = useCallback(async (userId: string) => {
-        try {
-
-            //Get app user
-
-            const movieRates: MovieRate[] = [];
+    const getFavoriteMovieIds = useCallback(async (userId: string | undefined) => {
+        try {   
             if (db) {
-                const queryResult = query(collection(db, "favoriteMoviesbyUser"), where("movieId", "==", userId));
+                console.log("getFavoriteMovieIds...");
+                
+                const queryResult = query(collection(db, "favoriteMoviesbyUser"), where("userId", "==", userId));
                 const querySnapshot = await getDocs(queryResult);
+                
+                console.log("docs found...", querySnapshot.docs.length);
+                const movieIds: number[] = [];
                 if (querySnapshot.docs.length > 0) {
+                    const movies:Movie[] = [];
                     querySnapshot.forEach((doc) => {
-                        const result: MovieRate = {
-                            movieRateId: doc.data().movieRateId,
-                            userId: doc.data().userId,
-                            movieId: doc.data().movieId,
-                            comments: doc.data().comments,
-                            movieRateValue: doc.data().movieRate,
-                            created: doc.data().created,
-                        };
-                        movieRates.push(result);
+                        movieIds.push(doc.data().movieId);                                              
+                        //return movies;                        
                     });
                 }
+                return movieIds;                
             }
-
-            return movieRates;
-
         } catch (error) {
             console.log(error);
         }
@@ -370,13 +356,9 @@ export const FirebaseProvider = ({ children }: any) => {
 
     const checkIfExistFavorite = useCallback(async (userId: string | undefined, movieId: number | undefined) => {
         if (db) {
-            console.log("Check exist favorite");
-            console.log("userId: ",userId);
-            console.log("movieId: ",movieId);
-                        
             const queryResult = query(collection(db, "favoriteMoviesbyUser"), where("movieId", "==", movieId), where("userId", "==", userId));
             const querySnapshot = await getDocs(queryResult);
-            if (querySnapshot.docs.length > 0) {   
+            if (querySnapshot.docs.length > 0) {
                 return true;
             }
             else
@@ -432,6 +414,7 @@ export const FirebaseProvider = ({ children }: any) => {
             logout,
             securityRegister,
             checkIfExistFavorite,
+            getFavoriteMovieIds,
 
             insertMovieRate,
             insertFavoriteMovieByUser,
@@ -447,6 +430,7 @@ export const FirebaseProvider = ({ children }: any) => {
             logout,
             securityRegister,
             checkIfExistFavorite,
+            getFavoriteMovieIds,
 
             insertMovieRate,
             insertFavoriteMovieByUser,

@@ -18,9 +18,7 @@ export const StarCheck: React.FC<StarCheckProps> = ({
         event.persist()
         const { type } = event.target
 
-        console.log("type: ",type);
         if (type === 'checkbox') {
-            console.log("isChecked: ",isChecked);
             HandleFavoriteSelection(!isChecked);            
         }
     }    

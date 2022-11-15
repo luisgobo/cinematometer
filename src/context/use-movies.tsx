@@ -3,13 +3,17 @@ import { useQuery } from 'react-query';
 import { Genre } from '../models/Genre';
 import { Movie } from '../models/movie';
 import { MovieDetails } from '../models/movieDetails';
-import { getGenres, getNowPlayingMovies, getPopularMovies, getSpecificMovie, getTopRatedMovies, getUpcomingMovies } from '../queries/movies';
+import { getGenres, getNowPlayingMovies, getPopularMovies, getSpecificMovie, getSpecificMovieDataCard, getTopRatedMovies, getUpcomingMovies } from '../queries/movies';
 
 interface MovieApiContextProps {
     nowPlayingMovies: Movie[] | undefined;
     popularMovies: Movie[] | undefined;
     topRatedMovies: Movie[] | undefined;
     upComingMovies: Movie[] | undefined;
+    pivotMovieList: Movie[] | undefined;
+    retrieveFavoriteMoviesInfo: (
+        movieIds: number[]| undefined,
+    ) => Promise< void | undefined>
 
     nowPlayingMoviesStatus: any,
     popularMoviesStatus: any,
@@ -21,7 +25,7 @@ interface MovieApiContextProps {
     topRatedMoviesError: any,
     upComingMoviesError: any,
 
-    specificMovie: MovieDetails | undefined,
+    specificMovie: MovieDetails | undefined,    
     specificMovieStatus: any,
     specificMovieError: any,
 
@@ -39,6 +43,8 @@ const MoviesContext = React.createContext<MovieApiContextProps>({
     popularMovies: [],
     topRatedMovies: [],
     upComingMovies: [],
+    pivotMovieList: [],
+    retrieveFavoriteMoviesInfo: () => Promise.resolve(undefined), 
 
     nowPlayingMoviesStatus: {},
     popularMoviesStatus: {},
@@ -50,7 +56,7 @@ const MoviesContext = React.createContext<MovieApiContextProps>({
     topRatedMoviesError: {},
     upComingMoviesError: {},
 
-    specificMovie: undefined,
+    specificMovie: undefined,    
     specificMovieStatus: {},
     specificMovieError: {},
 
@@ -69,6 +75,9 @@ export const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ child
     const [moviesPage, setMoviesPage] = React.useState(1);
     const [selectedMovieId, setSelectedMovieId] = React.useState(0);
     const [selectedMovieRate, setSelectedMovieRate] = React.useState(0);
+
+    const [pivotMovieList, setPivotMovieList] = React.useState<Movie[]>([]);
+
 
     const toggleModal = useCallback(() => {
         const bodyClassList = document.body.classList;
@@ -109,10 +118,66 @@ export const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ child
         () => getSpecificMovie(selectedMovieId)
     );
 
+    const { data: specificMovieDataCard, status: specificMovieDataCardStatus, error: specificMovieDataCardError } = useQuery<Movie>(
+        ["specificData", selectedMovieId],
+        () => getSpecificMovieDataCard(selectedMovieId)
+    );
+
     const { data: genres, status: genresStatus, error: genresError } = useQuery<Genre[]>(
         ["genresData", moviesPage],
         () => getGenres(moviesPage)
-    );
+    );   
+    
+    const retrieveFavoriteMoviesInfo = React.useCallback( async (movieIds: number[]|undefined)=> {
+                
+        const movies: Movie[] | undefined= [];        
+        
+        movieIds?.map( async movieId => {
+            await getSpecificMovie(movieId).then(async (res: Movie)=>{
+                //console.log("retrieveFavoriteMoviesInfo-getSpecificMovie-res", res);
+                movies.push(res);
+                //data comes here
+            });
+            
+            console.log("movies after push res001: ", movies);
+            setPivotMovieList(movies)
+            
+        });
+        
+        // if(movieIds.length> 0 ){
+        //     const movies: Movie[] | undefined= []
+            
+        //     movieIds.forEach(movieId => {
+
+        //         const asd= getSpecificMovie(movieId) 
+        //         console.log("asd List:", asd);
+                
+
+        //         // const result: Movie = {
+        //         //     poster_path: doc.data().poster_path,
+        //         //     adult: doc.data().adult,
+        //         //     overview: doc.data().overview,
+        //         //     release_date: doc.data().release_date,
+        //         //     genre_ids: doc.data().genre_ids,
+        //         //     genres: doc.data().genres,
+        //         //     id: doc.data().id,
+        //         //     original_title: doc.data().original_title,
+        //         //     original_language: doc.data().original_language,
+        //         //     title: doc.data().title,
+        //         //     backdrop_path: doc.data().backdrop_path,
+        //         //     popularity: doc.data().popularity,
+        //         //     vote_count: doc.data().vote_count,
+        //         //     video: doc.data().video,
+        //         //     vote_average: doc.data().vote_average
+        //         // };
+        //         // movieRates.push(result);
+        //     });
+        //     return  movies;
+        // }
+
+        //return  undefined;
+        }
+    ,[]);
 
     const contextValue: MovieApiContextProps = React.useMemo(
         () => ({
@@ -120,6 +185,8 @@ export const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ child
             popularMovies,
             topRatedMovies,
             upComingMovies,
+            pivotMovieList,
+            retrieveFavoriteMoviesInfo,           
 
             nowPlayingMoviesStatus,
             popularMoviesStatus,
@@ -148,6 +215,8 @@ export const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ child
             popularMovies,
             topRatedMovies,
             upComingMovies,
+            pivotMovieList,
+            retrieveFavoriteMoviesInfo,
 
             nowPlayingMoviesStatus,
             popularMoviesStatus,

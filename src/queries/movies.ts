@@ -39,6 +39,17 @@ export const getSpecificMovie = async (movieId: number) => {
     return undefined;
 };
 
+export const getSpecificMovieDataCard = async (movieId: number) => {
+    
+    if(movieId> 0){
+        const { data } = await axios.get(
+            `${process.env.REACT_APP_MOVIES_API_ENDPOINT}/movie/${movieId}?api_key=${process.env.REACT_APP_MOVIES_API_KEY}&language=en-US`
+        );    
+        return data;
+    }
+    return undefined;
+};
+
 export const getGenres = async (page: number) => {
     const { data } = await axios.get(
         `${process.env.REACT_APP_MOVIES_API_ENDPOINT}/genre/movie/list?api_key=${process.env.REACT_APP_MOVIES_API_KEY}&language=en-US`

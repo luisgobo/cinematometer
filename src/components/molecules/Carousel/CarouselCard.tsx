@@ -36,12 +36,10 @@ export const CarouselCard: React.FC<CarouselCardProps> = ({
         
         checkIfExistFavorite(appUser?.authenticationId,movie.id)
         .then(async (isFavoriteRes) =>{
-            console.log("Carousel Car- isFavoriteRes: ", isFavoriteRes);
-            
             setIsFavorite(isFavoriteRes? true : false );
         });        
 
-    }, [movie, appUser,checkIfExistFavorite])
+    }, [movie, appUser, checkIfExistFavorite])
     
 
     return (
