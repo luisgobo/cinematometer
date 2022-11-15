@@ -19,21 +19,9 @@ export const MovieInfoModal: React.FC<MovieInfoModalProps>  = ({
 
     const[isFavorite, setIsFavorite] = React.useState(false);
     const [roundedRate, setRoundedRate] = React.useState(0);
-    const [extendCommentPane, setExtendCommentPane] = React.useState(false);
+    const [refreshCommentList, setRefreshCommentList] = React.useState(false);
 
-    const handleSelectedRate = ((ratedValue: number) => {
-        console.log("ratedValue:", ratedValue);
-    });
-
-    const handleShowComments = () => {
-        setExtendCommentPane(true);
-        //return undefined;
-      }
     
-      const handleHideComments = () => {
-        setExtendCommentPane(false);
-      }
-
     const {
         selectedMovieRate,
         specificMovie: movie,
@@ -46,12 +34,25 @@ export const MovieInfoModal: React.FC<MovieInfoModalProps>  = ({
         insertFavoriteMovieByUser,
         deleteFavoriteMovieByUser
     } = useFierbase();
-
     
- 
+    const handleUpdateComments = ((refreshList: boolean) => {
+        console.log("Update list:", refreshList);
+        
+        setRefreshCommentList(refreshList);
+    });
 
+    const handleSelectedRate = ((ratedValue: number) => {
+        //console.log("ratedValue:", ratedValue);
+    });
 
+    // const handleShowComments = () => {
+    //     setExtendCommentPane(true);        
+    // }
 
+    // const handleHideComments = () => {
+    //     setExtendCommentPane(false);
+    // }
+    
     const handleFavoriteSelection = async (favoriteOptionSelected: boolean)=>{        
         setIsFavorite(favoriteOptionSelected);
         
@@ -150,10 +151,10 @@ export const MovieInfoModal: React.FC<MovieInfoModalProps>  = ({
                         <div className="popup-child">
                             <UserOpinionForm
                                 userId={appUser?.authenticationId === undefined ? "" : appUser.authenticationId}
-                                movieId={movie?.id} HandleShowComments={handleShowComments}/>                            
+                                movieId={movie?.id} HandleUpdateComments={handleUpdateComments}/>                            
                         </div>
                         <div className="popup-child">                                                        
-                            <UserOpinionListByMovie movieId={movie?.id} />                            
+                            <UserOpinionListByMovie movieId={movie?.id} refreshMovieComments={refreshCommentList} />
                         </div>
                             
                     </div>

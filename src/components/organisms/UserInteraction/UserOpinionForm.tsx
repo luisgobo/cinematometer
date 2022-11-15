@@ -6,15 +6,14 @@ import { useFierbase } from "../../../context/use-firebase";
 import { MovieRate } from "../../../models/MovieRate";
 import AuthorizedPage from "../../layouts/AuthorizedPage";
 import * as Yup from 'yup'
-import { Hidden, TextField } from "@mui/material";
-import { StarEvaluation } from "../../atoms/StarEvaluation";
+import { TextField } from "@mui/material";
 
 const MovieRateSchema = Yup.object().shape({
   comments: Yup.string().required(),
   movieRateValue: Yup.number().required().min(1).max(10)
 });
 
-const CssTextField = styled(TextField)({
+const CssTextFieldComments = styled(TextField)({
   '& label.Mui-focused': {
     color: 'gray',
   },
@@ -38,6 +37,30 @@ const CssTextField = styled(TextField)({
   marginBottom: 10
 });
 
+const CssTextRate = styled(TextField)({
+  '& label.Mui-focused': {
+    color: 'gray',
+  },
+  '& .MuiInput-underline:after': {
+    borderBottomColor: 'gray',
+  },
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: 'lightGray',
+    },
+    '&:hover fieldset': {
+      borderColor: '#ffffff',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: 'gray',
+    },
+  },
+  width: 250,
+  marginRight: 20,
+  marginTop: 10,
+  marginBottom: 10
+});
+
 const ButtonStyled = styled(LoadingButton)(() => ({
   color: 'black',
   backgroundColor: 'aliceblue',
@@ -52,12 +75,13 @@ const ButtonStyled = styled(LoadingButton)(() => ({
 export interface UserOpinionFormProps {
   userId: string,
   movieId: number,
-  HandleShowComments: Function
+  HandleUpdateComments: Function
 }
 
 export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
   userId,
   movieId,
+  HandleUpdateComments
 }) => {
 
   const { insertMovieRate } = useFierbase();
@@ -67,6 +91,7 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
       console.log("Handle Submit userId:", userId);
 
       await insertMovieRate(values.movieRateId, values.userId, values.movieId, values.comments, values.movieRateValue);
+      HandleUpdateComments(true);
 
     } catch (error) {
       console.log(error);
@@ -107,7 +132,7 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
 
               <h3 className="user-opinion-p">Let us know about this movie</h3>
               
-              <TextField
+              <CssTextRate
                 error={touched.movieRateValue && !!errors.movieRateValue}
                 helperText={touched.movieRateValue && errors.movieRateValue}
                 required
@@ -117,17 +142,16 @@ export const UserOpinionForm: React.FC<UserOpinionFormProps> = ({
                 placeholder='Type a value'
                 onChange={handleChange("movieRateValue")}
                 onBlur={handleBlur("movieRateValue")}
-                className="user-opinion-textbox2" 
-                hidden
+                className="user-opinion-textbox2"                
               />
               
-              <StarEvaluation 
+              {/* <StarEvaluation 
                 isReadOnly={false} 
                 roundedRate={1} 
                 HandleSelectedRate={undefined}
-              />
+              /> */}
 
-              <CssTextField
+              <CssTextFieldComments
                 error={touched.comments && !!errors.comments}
                 helperText={touched.comments && errors.comments}
                 required

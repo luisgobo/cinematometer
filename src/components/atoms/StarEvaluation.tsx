@@ -36,6 +36,5 @@ export const StarEvaluation: React.FC<StarEvaluationProps> = ({
             <input type="radio" id="rating2" name="rating" value="2" defaultChecked={roundedRate !== 0 && roundedRate === 2} onChange={handleRate} /> <label htmlFor="rating2" title="1 star"></label>
             <input type="radio" id="rating1" name="rating" value="1" defaultChecked={roundedRate !== 0 && roundedRate === 1} onChange={handleRate} /> <label className="half" htmlFor="rating1" title="1/2 star"></label>
         </fieldset>
-
     );
 }

@@ -5,32 +5,52 @@ import AuthorizedPage from "../../layouts/AuthorizedPage";
 
 export interface UserOpinionListByMovieProps {
   movieId: number;
+  refreshMovieComments: boolean
 }
 
 export const UserOpinionListByMovie: React.FC<UserOpinionListByMovieProps> = ({
-  movieId
+  movieId,
+  refreshMovieComments
 }) => {
 
   const { getMovieRatesByMovieId } = useFierbase();
 
   const [movieRates, setMovieRates] = React.useState<MovieRate[]>([]);
   const [displayRates, setDisplayRates] = React.useState(false);
+  const [refreshRateList, setRefreshRateList] = React.useState(false);
 
+
+  // React.useEffect(() => {  
+  //   setRefreshRateList(refreshMovieComments);
+  // },[]);
+  
+  React.useEffect(() => {  
+    setRefreshRateList(refreshMovieComments);
+  },[refreshMovieComments]);
+  
   React.useEffect(() => {    
+      if(refreshMovieComments){
+        getCommentList();
+        setRefreshRateList(false);
+      }
+
+  }, [refreshRateList])
+
+  const getCommentList= () =>{
+    
     const rates: MovieRate[] = []
-    getMovieRatesByMovieId(movieId).then(async (movieRates: (MovieRate[] | undefined)) => {      
-      movieRates?.forEach((movieRate) => {      
+    getMovieRatesByMovieId(movieId).then(async (movieComments: (MovieRate[] | undefined)) => {      
+      movieComments?.forEach((movieRate) => {      
         rates.push(movieRate);
       });      
       setMovieRates(rates);
     })
 
-  }, [])
+  }
 
   React.useEffect(() => {    
     if (movieRates.length > 0)
       setDisplayRates(true);
-
   }, [movieRates])
 
 
