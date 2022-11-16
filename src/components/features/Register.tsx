@@ -1,7 +1,7 @@
 import React from "react";
 import { Formik } from "formik";
 import * as Yup from 'yup';
-import "./styles/register.css"
+import "../../styles/register.scss"
 import { useFierbase } from '../../context/use-firebase';
 import { TextField } from '@mui/material';
 import { LoadingButton } from "@mui/lab";
@@ -37,13 +37,12 @@ export const Register = () => {
         try {
             await securityRegister(values.email, values.password, values.name);
         } catch (error) {
-            console.log("error found");
             console.log(error);
         }
     }
     return (
         <AuthorizedPage>
-            <main>
+            <main className="main">
                 <Formik<registerFormValues>
                     initialValues={{
                         email: '',
@@ -67,7 +66,7 @@ export const Register = () => {
                         isValid,
                         isValidating
                     }) => (
-                        <form onSubmit={handleSubmit}>
+                        <form className="registry-form" onSubmit={handleSubmit}>
                             <h1>Register</h1>
                             <TextField
                                 error={touched.email && !!errors.email}

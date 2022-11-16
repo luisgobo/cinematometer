@@ -1,17 +1,18 @@
 import React from "react";
 import { Formik } from "formik";
 import * as Yup from 'yup'
-import "./styles/register.css"
+import "../../styles/register.scss"
 import { useFierbase } from '../../context/use-firebase';
 import { TextField, Link } from '@mui/material';
 import styled from '@emotion/styled'
 import { LoadingButton } from "@mui/lab";
 import AuthorizedPage from "../layouts/AuthorizedPage";
+import { useNavigate } from "react-router-dom";
 
 
 //const MIN_PASSWORD_CHARACTERS = 8;
 
-interface loginFormValues {
+interface LoginFormValues {
     email: string,
     password: string
 }
@@ -31,14 +32,16 @@ const LoginSchema = Yup.object().shape({
 export const Login = () => {
 
     const { login } = useFierbase();
+    const navigate = useNavigate();
 
-    const handleFormSubmit = async (values: loginFormValues) => {
+    const handleFormSubmit = async (values: LoginFormValues) => {
         try {
-            const user = await login(values.email, values.password);
-            console.log(user);
+            const user = await login(values.email, values.password);            
+            if(user){
+                navigate("/");  
+            }
 
-        } catch (error) {
-            console.log("error found");
+        } catch (error) {            
             console.log(error);
         }
     }
@@ -49,8 +52,8 @@ export const Login = () => {
 
     return (
         <AuthorizedPage>
-            <main>
-                <Formik<loginFormValues>
+            <main className="main">
+                <Formik<LoginFormValues>
                     initialValues={{
                         email: '',
                         password: ''
@@ -72,7 +75,7 @@ export const Login = () => {
                         isValid,
                         isValidating
                     }) => (
-                        <form onSubmit={handleSubmit}>
+                        <form className="registry-form" onSubmit={handleSubmit}>
                             <h1>Login</h1>
                             <TextField
                                 error={touched.email && !!errors.email}

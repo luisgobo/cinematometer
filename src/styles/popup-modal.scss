@@ -1,0 +1,116 @@
+@import './color-palette.scss';
+
+@keyframes background-in {
+    0% {
+        scale: 0 0.005;
+    }
+
+    33% {
+        scale: 1 0.005;
+    }
+
+    66%,
+    100% {
+        scale: 1 1;
+    }
+}
+
+.modal-background {
+    position: fixed;
+    top: 0;
+    left: 0; 
+    width: 100%;
+    height: 100%;
+    display: flex;
+    place-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(1, 1);
+    background: secondary-color;//$modalBackgroudColorSecondary;
+    transition: 0.5s;
+}
+
+body.open .modal-background {
+    visibility: visible;
+    opacity: 1;
+    animation: background-in 1s both;
+    z-index: 1;
+}
+
+@keyframes modal-in {
+
+    0%,
+    66% {
+        opacity: 0;
+        visibility: hidden;
+        translate: -50% -30%;
+    }
+
+    100% {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+.modal {
+
+    position: fixed;
+    top: 446px;
+    left: 50%;
+    background-color: $black;
+    color: $text-primary-color;
+    padding: 10px 40px;
+    width: 1300px;    
+    height: calc(100vh - (32px + 1px));
+    border-radius: 12px;
+    translate: -50% -50%;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s;
+    z-index: 1;
+}
+
+body.open .modal {
+    opacity: 1;
+    visibility: visible;
+    animation: modal-in 1s;
+}
+
+body.closed .modal {
+    opacity: 0;
+    visibility: hidden;
+    translate: -50% -50%;
+}
+
+h2 {
+    margin: 0 0 8px;
+    font-weight: 400;
+    font-size: 21px;
+}
+
+p {
+    margin: 0;
+    color: $p-marginColor;
+}
+
+.close-modal{
+    position: absolute;
+    right: 0px;
+    margin-right: 15px;    
+    font-size: 20px;
+    transform: scale(1, 0.8);        
+    cursor: pointer;
+    
+}
+
+.close-modal:hover{    
+    font-weight: bolder;    
+}
+
+.popup-container{
+    margin: 0rem;    
+}
+
+.popup-child{
+    display: inline-block;
+}
