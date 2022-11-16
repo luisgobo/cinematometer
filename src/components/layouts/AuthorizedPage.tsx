@@ -9,12 +9,9 @@ const AuthorizedPage: React.FC<PropsWithChildren> = ({children}) => {
 
     React.useEffect(() => {
         if (firebaseUser){
-            console.log("firebaseUser:", firebaseUser);
-            
             console.log('firebase user found in AuthorizedPage')
             //Commented because of conflict witn nav bar
-            console.log("isLogOut", isLogOut);
-            
+
             if(!isLogOut &&firebaseUser)
                 navigate("/");            
             else{                

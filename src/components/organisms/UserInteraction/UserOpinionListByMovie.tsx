@@ -6,11 +6,13 @@ import AuthorizedPage from "../../layouts/AuthorizedPage";
 export interface UserOpinionListByMovieProps {
   movieId: number;
   refreshMovieComments: boolean
+  handleRefreshList: Function
 }
 
 export const UserOpinionListByMovie: React.FC<UserOpinionListByMovieProps> = ({
   movieId,
-  refreshMovieComments
+  refreshMovieComments,
+  handleRefreshList
 }) => {
 
   const { getMovieRatesByMovieId } = useFierbase();
@@ -24,7 +26,7 @@ export const UserOpinionListByMovie: React.FC<UserOpinionListByMovieProps> = ({
     setRefreshRateList(true);
   },[]);
   
-  React.useEffect(() => {  
+  React.useEffect(() => {     
     setRefreshRateList(refreshMovieComments);
   },[refreshMovieComments]);
   
@@ -32,6 +34,7 @@ export const UserOpinionListByMovie: React.FC<UserOpinionListByMovieProps> = ({
       if(refreshMovieComments){
         getCommentList();
         setRefreshRateList(false);
+        handleRefreshList(false);
       }
 
   }, [refreshRateList])
@@ -81,7 +84,7 @@ export const UserOpinionListByMovie: React.FC<UserOpinionListByMovieProps> = ({
                     </li>
                   ))}
                 </ul>              
-              : <p>theres no comments to show</p>}
+              : <p>There are no comments to show</p>}
           </div>
 
         </main>

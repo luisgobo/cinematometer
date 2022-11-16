@@ -40,8 +40,6 @@ export const Login = () => {
             if(user){
                 navigate("/");  
             }
-                
-            
 
         } catch (error) {            
             console.log(error);

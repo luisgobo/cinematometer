@@ -135,8 +135,7 @@ export const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ child
             await getSpecificMovie(movieId).then(async (res: Movie)=>{
                 movies.push(res);
             });
-            
-            console.log("movies after push res001: ", movies);
+                    
             setPivotMovieList(movies)
             
         });                

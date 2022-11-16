@@ -34,10 +34,17 @@ export const MovieInfoModal: React.FC<MovieInfoModalProps> = ({
         deleteFavoriteMovieByUser
     } = useFierbase();
 
-    const handleUpdateComments = ((refreshList: boolean) => {
-        console.log("Update list:", refreshList);
-
+    const handleUpdateComments = ((refreshList: boolean) => {        
+        console.log("refreshCommentList? ", refreshCommentList);
+        console.log("refreshList? ", refreshList);
+        
         setRefreshCommentList(refreshList);
+    });
+    
+    const handleRefreshList = ((resetValue: boolean) => {
+        console.log("da65s4da6sd4");
+        
+        setRefreshCommentList(resetValue);
     });
 
     const handleSelectedRate = ((ratedValue: number) => {
@@ -83,6 +90,11 @@ export const MovieInfoModal: React.FC<MovieInfoModalProps> = ({
             setRoundedRate(rounded);
         }
     }, [selectedMovieRate])
+
+    React.useEffect(() => {        
+        setRefreshCommentList(true);
+    }, [])
+
 
     return (
         <>
@@ -148,7 +160,7 @@ export const MovieInfoModal: React.FC<MovieInfoModalProps> = ({
                             />
                         </div>
                         <div className="popup-child">
-                            <UserOpinionListByMovie movieId={movie?.id} refreshMovieComments={refreshCommentList} />
+                            <UserOpinionListByMovie movieId={movie?.id} refreshMovieComments={refreshCommentList} handleRefreshList={handleRefreshList} />
                         </div>
                     </div>
                     : null
