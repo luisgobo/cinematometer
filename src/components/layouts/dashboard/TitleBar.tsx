@@ -15,12 +15,8 @@ export const TitleBar = () => {
                     <h1>Cinematometer</h1>
                 </div>
                 <div className="search-criteria">
-                    <div className="search-criteria-textbox">
-                        {/* <Textbox textboxTag="mail" htmlFor="Email Address"/> */}
-                    </div>
-                    <div className="search-criteria-button">
-                        {/* <LoaderButton buttonText="Search"/> */}
-                    </div>
+                    <div className="search-criteria-textbox"/>                        
+                    <div className="search-criteria-button"/>
                 </div>
                 <div className="user-info">
                 { appUser?.name ? ( <p>Hi! {appUser.name}</p> ) : ( <p>No user logged? Go to <Link href="/login" underline="none">{"here"}</Link> </p> ) }                
