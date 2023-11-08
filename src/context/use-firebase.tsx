@@ -27,8 +27,6 @@ import { useNavigate } from "react-router-dom";
 import { AppUser } from '../models/AppUser';
 import { MovieRate } from '../models/MovieRate';
 import { FavoriteMovie } from '../models/FavoriteMovie';
-import { Movie } from '../models/movie';
-import { useMovies } from './use-movies';
 
 const firebaseCredentials: FirebaseOptions = {
     apiKey: process.env.REACT_APP_APIKEY,
@@ -146,7 +144,13 @@ export const FirebaseProvider = ({ children }: any) => {
                 });
             }
         } catch (error) {
-            console.log(error);
+
+            let msg= String(error);
+            if(msg.includes('FirebaseError: Missing or insufficient permissions.'))
+                console.log(`${msg}. Check Database Write-Read permisions in firebase's database rules panel`);
+            else
+            console.log(msg)
+
         }
     };
 
@@ -159,27 +163,12 @@ export const FirebaseProvider = ({ children }: any) => {
                     name: name,
                     email: email ? email : "email@notfound.com",
                     created: Timestamp.now()
-                }
+                }                
+
                 await addDoc(collection(db, 'users'), user)
                     .then((result) => {
                         setAppUser({ ...user, authenticationId: result.id });
-                    });
-
-                // await addDoc(collection(db, 'users'), {
-                //     authenticationId: id,
-                //     email: email,
-                //     name: name,
-                //     created: Timestamp.now()
-                // })
-                // .then((result) => {
-                //     const user: AppUser = {
-                //         authenticationId: result.id,
-                //         name: name,
-                //         email: email ? email : "email@notfound.com",
-                //         created: Timestamp.now()
-                //     }
-                //     setAppUser(user);
-                // });
+                    });                
             }
 
         } catch (error) {

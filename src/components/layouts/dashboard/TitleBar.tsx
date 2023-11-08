@@ -1,6 +1,5 @@
+import { Link } from '@mui/material';
 import { useFierbase } from "../../../context/use-firebase";
-// import { LoaderButton } from "../../atoms/LoaderButton";
-// import { Textbox } from "../../atoms/TextBox";
 import "../../../styles/dashboard.scss"
 import cinematometer_logo2 from "../../../resources/cinematometer_logo2.png"
 
@@ -24,7 +23,7 @@ export const TitleBar = () => {
                     </div>
                 </div>
                 <div className="user-info">
-                    <p>Hi {appUser?.name}!</p>
+                { appUser?.name ? ( <p>Hi! {appUser.name}</p> ) : ( <p>No user logged? Go to <Link href="/login" underline="none">{"here"}</Link> </p> ) }                
                 </div>
             </div>
         </>

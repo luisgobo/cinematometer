@@ -9,9 +9,6 @@ import { LoadingButton } from "@mui/lab";
 import AuthorizedPage from "../layouts/AuthorizedPage";
 import { useNavigate } from "react-router-dom";
 
-
-//const MIN_PASSWORD_CHARACTERS = 8;
-
 interface LoginFormValues {
     email: string,
     password: string
@@ -109,10 +106,7 @@ export const Login = () => {
                                 Login
                             </ButtonStyled>
                             <div>
-                                No User? Crated it
-                                <Link href="/register" underline="none">
-                                    {" here"}
-                                </Link>
+                                No User? Crated it <Link href="/register" underline="none">{"here"}</Link>
                             </div>
                         </form>
                     )

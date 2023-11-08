@@ -58,9 +58,7 @@ export const CarouselCard: React.FC<CarouselCardProps> = ({
                 <div className="container">
                     <h4  className="card-movie-title1"><b>{movie?.title}</b></h4>
                     <h5 className="card-movie-title2">{movie?.original_title} </h5>
-                    <p className="vote-average">Vote average: {movie?.vote_average}/10</p>
-                    {/* <p>Vote average: {Math.round(movie?.vote_average)}</p> */}
-                    {/* <StarEvaluation isReadOnly={false} roundedRate={Math.round(movie?.vote_average)} HandleSelectedRate={undefined} />  */}
+                    <p className="vote-average">Vote average: {movie?.vote_average}/10</p>                    
                     <button className="button" onClick={() => displayModal(movie?.id, movie?.vote_average)} >More details</button>
                 </div>
             </div>

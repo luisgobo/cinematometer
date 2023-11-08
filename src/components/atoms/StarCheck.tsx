@@ -21,7 +21,7 @@ export const StarCheck: React.FC<StarCheckProps> = ({
         if (type === 'checkbox') {
             HandleFavoriteSelection(!isChecked);            
         }
-    }    
+    }        
 
     return (
         <div>            
