@@ -1,5 +1,6 @@
 import React from "react";
 import { useMovies } from "../../context/use-movies";
+import AuthorizedPage from "../layouts/AuthorizedPage";
 import ProtectedPage from "../layouts/ProtectedPage";
 import { InfoCarousel } from "../organisms/Carousel/InfoCarousel";
 import { Movie } from "../../models/movie";
@@ -37,7 +38,7 @@ export const Home = () => {
 
   return (
     //<ProtectedPage>
-
+    <AuthorizedPage>
       <DashboardLayout>
         {
           <div>
@@ -69,7 +70,7 @@ export const Home = () => {
           </div>
         }
       </DashboardLayout>
-
+    </AuthorizedPage>
     //</ProtectedPage>
   );
 }

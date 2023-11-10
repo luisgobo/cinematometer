@@ -1,7 +1,6 @@
 import { Movie } from "../../../models/movie"
 import '../../../styles/carousel-card.scss';
 import { useMovies } from "../../../context/use-movies";
-import { StarEvaluation } from "../../atoms/StarEvaluation";
 import React from "react";
 import { useFierbase } from "../../../context/use-firebase";
 
@@ -34,11 +33,13 @@ export const CarouselCard: React.FC<CarouselCardProps> = ({
 
     React.useEffect(() => {
         
+        console.log(`appUser: ${appUser}`);
+            
         checkIfExistFavorite(appUser?.authenticationId,movie.id)
-        .then(async (isFavoriteRes) =>{
-            setIsFavorite(isFavoriteRes? true : false );
-        });        
-
+        .then(async (isFavoriteResult) =>{
+            console.log(`isFavoriteRes: ${isFavoriteResult}`);
+            setIsFavorite(isFavoriteResult? true : false );
+        });
     }, [movie, appUser, checkIfExistFavorite])
     
 

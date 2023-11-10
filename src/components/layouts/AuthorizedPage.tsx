@@ -8,19 +8,29 @@ const AuthorizedPage: React.FC<PropsWithChildren> = ({children}) => {
     const navigate = useNavigate();
 
     React.useEffect(() => {
-        if (firebaseUser){
+        
+        try {
+            if (firebaseUser){
             console.log('firebase user found in AuthorizedPage')
             //Commented because of conflict witn nav bar
-
-            if(!isLogOut &&firebaseUser)
+            console.log("Checking user information and firebase credentials" );            
+            if(!isLogOut && firebaseUser){
+                console.log("sadasdasd564a6sda")
                 navigate("/");            
+
+            }                
             else{                
                 navigate("/login");
                 setIsLogOut(false);
 
             }
         }
-    }, [firebaseUser, isLogOut]);    
+        } catch (error) {
+          console.log(`Something went wrong: ${error}`);
+        }
+        
+            
+    }, [firebaseUser, setIsLogOut]);
 
     if (displayLoading) {
         return(

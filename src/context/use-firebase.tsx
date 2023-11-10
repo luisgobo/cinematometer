@@ -346,7 +346,9 @@ export const FirebaseProvider = ({ children }: any) => {
 
 
     const checkIfExistFavorite = useCallback(async (userId: string | undefined, movieId: number | undefined) => {
-        if (db) {
+        
+        
+        if (db && (userId !== undefined && movieId !== undefined) ) {
             const queryResult = query(collection(db, "favoriteMoviesbyUser"), where("movieId", "==", movieId), where("userId", "==", userId));
             const querySnapshot = await getDocs(queryResult);
             if (querySnapshot.docs.length > 0) {
@@ -356,7 +358,7 @@ export const FirebaseProvider = ({ children }: any) => {
                 return false;
         }
 
-        return undefined;
+        return false;
 
     }, [db]);
 
@@ -371,11 +373,8 @@ export const FirebaseProvider = ({ children }: any) => {
 
             setFirebaseUser(user);
             setDisplayLoading(false);
-            //Commented because of conflict witn nav bar
-            //navigate("/");
-
-        }
-        , [navigate]);
+        }        
+        ,[]);
 
     React.useEffect(() => {
         const app = initializeApp(firebaseCredentials);
